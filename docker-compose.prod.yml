@@ -8,6 +8,8 @@ services:
     restart: unless-stopped
     env_file:
       - ./configs/env/prod.env
+    ports:
+      - "127.0.0.1:18080:80"
     volumes:
       - voovi_doc:/var/www/html/doc
       - voovi_log:/var/www/html/log
@@ -33,6 +35,8 @@ services:
     command: python manage.py runserver 0.0.0.0:8000
     env_file:
       - ./configs/env/prod.env
+    ports:
+      - "127.0.0.1:18001:8000"
     networks:
       voovi:
         aliases:
@@ -67,6 +71,8 @@ services:
         condition: service_started
     env_file:
       - ./configs/env/prod.env
+    ports:
+      - "127.0.0.1:17000:7000"
     networks:
       - voovi
 
