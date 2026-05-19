@@ -70,24 +70,6 @@ services:
     networks:
       - voovi
 
-  nginx:
-    image: nginx:1.27-alpine
-    container_name: voovi_nginx
-    restart: unless-stopped
-    depends_on:
-      voovi-web:
-        condition: service_started
-      svoovi-api:
-        condition: service_started
-      analitic:
-        condition: service_started
-    ports:
-      - "127.0.0.1:${NGINX_HTTP_PORT:-8080}:80"
-    volumes:
-      - ./configs/nginx/prod.conf:/etc/nginx/conf.d/default.conf:ro
-    networks:
-      - voovi
-
 networks:
   voovi:
     name: voovi
