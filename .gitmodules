@@ -1,0 +1,12 @@
+[submodule "analitic"]
+	path = analitic
+	url = https://github.com/Antonsaiev/analitic.git
+	branch = change_app
+[submodule "s.voovi.ru-api"]
+	path = s.voovi.ru-api
+	url = https://github.com/Antonsaiev/s.voovi.ru-api.git
+	branch = main
+[submodule "voovi.ru"]
+	path = voovi.ru
+	url = https://github.com/Antonsaiev/voovi.ru.git
+	branch = main

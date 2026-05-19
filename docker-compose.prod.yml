@@ -1,0 +1,105 @@
+services:
+  voovi-web:
+    build:
+      context: ./voovi.ru
+      dockerfile: Dockerfile
+    platform: linux/amd64
+    container_name: voovi_web
+    restart: unless-stopped
+    env_file:
+      - ./configs/env/prod.env
+    volumes:
+      - voovi_doc:/var/www/html/doc
+      - voovi_log:/var/www/html/log
+      - voovi_upload:/var/www/html/upload
+      - voovi_files:/var/www/html/files
+      - voovi_voicecatalog:/var/www/html/voicecatalog
+      - voovi_img:/var/www/html/img
+      - voovi_vipiska:/var/www/html/vipiska
+      - voovi_scheta:/var/www/html/scheta
+      - voovi_mail_database:/var/www/html/mail/database
+    networks:
+      voovi:
+        aliases:
+          - voovi.ru
+
+  svoovi-api:
+    build:
+      context: ./s.voovi.ru-api
+      dockerfile: Dockerfile
+    container_name: voovi_prod_svoovi_api
+    hostname: apisvoovi
+    restart: unless-stopped
+    command: python manage.py runserver 0.0.0.0:8000
+    env_file:
+      - ./configs/env/prod.env
+    networks:
+      voovi:
+        aliases:
+          - s.voovi.ru
+
+  svoovi-api-tasks:
+    build:
+      context: ./s.voovi.ru-api
+      dockerfile: Dockerfile
+    container_name: voovi_prod_svoovi_api_tasks
+    hostname: apisvoovi_tasks
+    restart: unless-stopped
+    command: python manage.py process_tasks
+    depends_on:
+      svoovi-api:
+        condition: service_started
+    env_file:
+      - ./configs/env/prod.env
+    networks:
+      - voovi
+
+  analitic:
+    build:
+      context: ./analitic
+      dockerfile: Dockerfile
+    container_name: voovi_prod_analitic
+    hostname: analitic
+    restart: unless-stopped
+    command: python manage.py runserver 0.0.0.0:7000 --insecure
+    depends_on:
+      svoovi-api:
+        condition: service_started
+    env_file:
+      - ./configs/env/prod.env
+    networks:
+      - voovi
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: voovi_nginx
+    restart: unless-stopped
+    depends_on:
+      voovi-web:
+        condition: service_started
+      svoovi-api:
+        condition: service_started
+      analitic:
+        condition: service_started
+    ports:
+      - "127.0.0.1:${NGINX_HTTP_PORT:-8080}:80"
+    volumes:
+      - ./configs/nginx/prod.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - voovi
+
+networks:
+  voovi:
+    name: voovi
+
+volumes:
+  voovi_mysql:
+  voovi_doc:
+  voovi_log:
+  voovi_upload:
+  voovi_files:
+  voovi_voicecatalog:
+  voovi_img:
+  voovi_vipiska:
+  voovi_scheta:
+  voovi_mail_database:

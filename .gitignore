@@ -1,0 +1,33 @@
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Local environment files
+/.env
+/.env.*
+
+# Local database dumps and backups
+*.sql
+*.dump
+*.bak
+*.backup
+
+# Docker / runtime state
+docker-data/
+logs/
+*.log
+
+# Python / Node local artifacts
+__pycache__/
+*.py[cod]
+/.venv/
+/venv/
+/env/
+node_modules/
+dist/
+build/
+/voovi.ru/
+/s.voovi.ru-api/
+/analitic/
