@@ -73,6 +73,8 @@ services:
       - ./configs/env/prod.env
     ports:
       - "127.0.0.1:18002:7000"
+    volumes:
+      - ./analitic/uploads:/code/uploads
     networks:
       - voovi
 
