@@ -1,0 +1,1111 @@
+--- a/1.php
++++ b/1.php
+@@ -193,10 +193,14 @@
+ 		$result47 = mysql_query($q47);
+ 		$person47 = mysql_fetch_array($result47);
+ 		if($person47['otk'] == 0){
+-			$Qdelete = mysql_query("UPDATE `schet` SET `otk` =  '1', `sortir` =  '".$var."' WHERE rand IN (".$impid.")") or die ("error in delete");
+-			if(isset($Qdelete)){
+-				echo "Успешно  ".$person."";
+-			}
++		    // TEMP_LEGACY_20261029 BEGIN BULK_OTK_CREATE
++		    // Создание отказа отключено; возврат статуса 0 ниже сохранён.
++		    // 			$Qdelete = mysql_query("UPDATE `schet` SET `otk` =  '1', `sortir` =  '".$var."' WHERE rand IN (".$impid.")") or die ("error in delete");
++		    // 			if(isset($Qdelete)){
++		    // 				echo "Успешно  ".$person."";
++		    // 			}
++		    // TEMP_LEGACY_20261029 END BULK_OTK_CREATE
++		    echo 'Создание отказов временно отключено.';
+ 		}if($person47['otk'] == 1){
+ 			$Qdelete = mysql_query("UPDATE `schet` SET `otk` =  '0' WHERE rand IN (".$impid.")") or die ("error in delete");
+ 			if(isset($Qdelete)){
+@@ -272,7 +276,9 @@
+ <input class="btn btn-success btn-xs" type="submit" name="akt" value="Акт отгружен" style="margin-bottom: 5px;" /> - 
+ ';}
+ ?>
++<!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BULK_BUTTON
+ <input class="btn btn-gavno btn-xs" type="submit" name="otk" value="Отказались" style="margin-bottom: 5px;" /> - 
++TEMP_LEGACY_20261029 END REFUSAL_BULK_BUTTON -->
+ <input class="btn btn-default btn-xs" type="reset" id="deleteol" value="Убрать отмеченые" style="margin-bottom: 5px;" /> - 
+ <?php if($userdata['otvetstven']==1){echo '<input onclick=\'return confirm("Для удаления счета нажмите OK!");\' class="btn btn-primary btn-xs" type="submit" name="deletemarked" value="Удалить" style="margin-bottom: 5px;" />';}?>
+ <p id="countdisplay" style="color:#fff; display:none;">Выбранно: <b style="font-size:15px;" id="count"></b></p>
+--- a/1toha.php
++++ b/1toha.php
+@@ -857,7 +857,10 @@
+ $idkli = "SELECT * FROM ogrn WHERE inn ='".$row['inn']."' AND kpp ='".$row['kpp']."'";
+ $ridkli = mysql_query($idkli);
+ $pidkli = mysql_fetch_array($ridkli);
+-$Qdelete = mysql_query("UPDATE `schet` SET `idkli` =  '".$pidkli['id']."' WHERE inn ='".$row['inn']."' AND kpp ='".$row['kpp']."' ");
++// TEMP_LEGACY_20261029 BEGIN AUTO_CLIENT_REASSIGN
++// Временно отключено: просмотр страницы не должен менять клиента счёта.
++// $Qdelete = mysql_query("UPDATE `schet` SET `idkli` =  '".$pidkli['id']."' WHERE inn ='".$row['inn']."' AND kpp ='".$row['kpp']."' ");
++// TEMP_LEGACY_20261029 END AUTO_CLIENT_REASSIGN
+ if($row['url'] == "0"){
+ }else{
+ echo "&nbsp;&nbsp;<a target='_blank' href='".$row['url']."'><img src='img/ks.png'></a>";
+--- a/doljen.php
++++ b/doljen.php
+@@ -185,10 +185,14 @@
+ 		$result47 = mysql_query($q47);
+ 		$person47 = mysql_fetch_array($result47);
+ 		if($person47['otk'] == 0){
+-			$Qdelete = mysql_query("UPDATE `schet` SET `otk` =  '1' WHERE rand IN (".$impid.")") or die ("error in delete");
+-			if(isset($Qdelete)){
+-				echo "Успешно  ".$person."";
+-			}
++		    // TEMP_LEGACY_20261029 BEGIN BULK_OTK_CREATE
++		    // Создание отказа отключено; возврат статуса 0 ниже сохранён.
++		    // 			$Qdelete = mysql_query("UPDATE `schet` SET `otk` =  '1' WHERE rand IN (".$impid.")") or die ("error in delete");
++		    // 			if(isset($Qdelete)){
++		    // 				echo "Успешно  ".$person."";
++		    // 			}
++		    // TEMP_LEGACY_20261029 END BULK_OTK_CREATE
++		    echo 'Создание отказов временно отключено.';
+ 		}if($person47['otk'] == 1){
+ 			$Qdelete = mysql_query("UPDATE `schet` SET `otk` =  '0' WHERE rand IN (".$impid.")") or die ("error in delete");
+ 			if(isset($Qdelete)){
+@@ -264,7 +268,9 @@
+ <input class="btn btn-success btn-xs" type="submit" name="akt" value="Акт отгружен" style="margin-bottom: 5px;" /> - 
+ ';}
+ ?>
++<!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BULK_BUTTON
+ <input class="btn btn-gavno btn-xs" type="submit" name="otk" value="Отказались" style="margin-bottom: 5px;" /> - 
++TEMP_LEGACY_20261029 END REFUSAL_BULK_BUTTON -->
+ <input class="btn btn-default btn-xs" type="reset" id="deleteol" value="Убрать отмеченые" style="margin-bottom: 5px;" /> - 
+ <?php if($userdata['otvetstven']==1){echo '<input onclick=\'return confirm("Для удаления счета нажмите OK!");\' class="btn btn-primary btn-xs" type="submit" name="deletemarked" value="Удалить" style="margin-bottom: 5px;" />';}?>
+ <p id="countdisplay" style="color:#fff; display:none;">Выбранно: <b style="font-size:15px;" id="count"></b></p>
+--- a/kartklient.php
++++ b/kartklient.php
+@@ -1501,10 +1501,14 @@
+ 		$result47 = mysql_query($q47);
+ 		$person47 = mysql_fetch_array($result47);
+ 		if($person47['otk'] == 0){
+-			$Qdelete = mysql_query("UPDATE `schet` SET `otk` =  '1' WHERE rand IN (".$impid.")") or die ("error in delete");
+-			if(isset($Qdelete)){
+-				echo "Успешно  ".$person."";
+-			}
++		    // TEMP_LEGACY_20261029 BEGIN BULK_OTK_CREATE
++		    // Создание отказа отключено; возврат статуса 0 ниже сохранён.
++		    // 			$Qdelete = mysql_query("UPDATE `schet` SET `otk` =  '1' WHERE rand IN (".$impid.")") or die ("error in delete");
++		    // 			if(isset($Qdelete)){
++		    // 				echo "Успешно  ".$person."";
++		    // 			}
++		    // TEMP_LEGACY_20261029 END BULK_OTK_CREATE
++		    echo 'Создание отказов временно отключено.';
+ 		}if($person47['otk'] == 1){
+ 			$Qdelete = mysql_query("UPDATE `schet` SET `otk` =  '0' WHERE rand IN (".$impid.")") or die ("error in delete");
+ 			if(isset($Qdelete)){
+@@ -1543,10 +1547,14 @@
+                     $result47 = mysql_query($q47);
+                     $person47 = mysql_fetch_array($result47);
+                     if($person47['cher'] == 0){
+-                        $Qdelete = mysql_query("UPDATE `schet` SET `cher` =  '1' WHERE rand IN (".$impid.")") or die ("error in delete");
+-                        if(isset($Qdelete)){
+-                            echo "Успешно  ".$person."";
+-                        }
++                        // TEMP_LEGACY_20261029 BEGIN BULK_CHER_CREATE
++                        // Создание отказа отключено; возврат статуса 0 ниже сохранён.
++                        //                         $Qdelete = mysql_query("UPDATE `schet` SET `cher` =  '1' WHERE rand IN (".$impid.")") or die ("error in delete");
++                        //                         if(isset($Qdelete)){
++                        //                             echo "Успешно  ".$person."";
++                        //                         }
++                        // TEMP_LEGACY_20261029 END BULK_CHER_CREATE
++                        echo 'Создание отказов временно отключено.';
+                     }if($person47['cher'] == 1){
+                         $Qdelete = mysql_query("UPDATE `schet` SET `cher` =  '0' WHERE rand IN (".$impid.")") or die ("error in delete");
+                         if(isset($Qdelete)){
+--- a/leha.php
++++ b/leha.php
+@@ -263,10 +263,14 @@
+ 		$result47 = mysql_query($q47);
+ 		$person47 = mysql_fetch_array($result47);
+ 		if($person47['otk'] == 0){
+-			$Qdelete = mysql_query("UPDATE `schet` SET `otk` =  '1' WHERE rand IN (".$impid.")") or die ("error in delete");
+-			if(isset($Qdelete)){
+-				echo "Успешно  ".$person."";
+-			}
++		    // TEMP_LEGACY_20261029 BEGIN BULK_OTK_CREATE
++		    // Создание отказа отключено; возврат статуса 0 ниже сохранён.
++		    // 			$Qdelete = mysql_query("UPDATE `schet` SET `otk` =  '1' WHERE rand IN (".$impid.")") or die ("error in delete");
++		    // 			if(isset($Qdelete)){
++		    // 				echo "Успешно  ".$person."";
++		    // 			}
++		    // TEMP_LEGACY_20261029 END BULK_OTK_CREATE
++		    echo 'Создание отказов временно отключено.';
+ 		}if($person47['otk'] == 1){
+ 			$Qdelete = mysql_query("UPDATE `schet` SET `otk` =  '0' WHERE rand IN (".$impid.")") or die ("error in delete");
+ 			if(isset($Qdelete)){
+@@ -342,7 +346,9 @@
+ <input class="btn btn-success btn-xs" type="submit" name="akt" value="Акт отгружен" style="margin-bottom: 5px;" /> - 
+ ';}
+ ?>
++<!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BULK_BUTTON
+ <input class="btn btn-gavno btn-xs" type="submit" name="otk" value="Отказались" style="margin-bottom: 5px;" /> - 
++TEMP_LEGACY_20261029 END REFUSAL_BULK_BUTTON -->
+ <input class="btn btn-default btn-xs" type="reset" id="deleteol" value="Убрать отмеченые" style="margin-bottom: 5px;" /> - 
+ <?php if($userdata['otvetstven']==1){echo '<input onclick=\'return confirm("Для удаления счета нажмите OK!");\' class="btn btn-primary btn-xs" type="submit" name="deletemarked" value="Удалить" style="margin-bottom: 5px;" />';}?>
+ <p id="countdisplay" style="color:#fff; display:none;">Выбранно: <b style="font-size:15px;" id="count"></b></p>
+--- a/mex.php
++++ b/mex.php
+@@ -263,10 +263,14 @@
+ 		$result47 = mysql_query($q47);
+ 		$person47 = mysql_fetch_array($result47);
+ 		if($person47['otk'] == 0){
+-			$Qdelete = mysql_query("UPDATE `schet` SET `otk` =  '1' WHERE rand IN (".$impid.")") or die ("error in delete");
+-			if(isset($Qdelete)){
+-				echo "Успешно  ".$person."";
+-			}
++		    // TEMP_LEGACY_20261029 BEGIN BULK_OTK_CREATE
++		    // Создание отказа отключено; возврат статуса 0 ниже сохранён.
++		    // 			$Qdelete = mysql_query("UPDATE `schet` SET `otk` =  '1' WHERE rand IN (".$impid.")") or die ("error in delete");
++		    // 			if(isset($Qdelete)){
++		    // 				echo "Успешно  ".$person."";
++		    // 			}
++		    // TEMP_LEGACY_20261029 END BULK_OTK_CREATE
++		    echo 'Создание отказов временно отключено.';
+ 		}if($person47['otk'] == 1){
+ 			$Qdelete = mysql_query("UPDATE `schet` SET `otk` =  '0' WHERE rand IN (".$impid.")") or die ("error in delete");
+ 			if(isset($Qdelete)){
+@@ -342,7 +346,9 @@
+ <input class="btn btn-success btn-xs" type="submit" name="akt" value="Акт отгружен" style="margin-bottom: 5px;" /> - 
+ ';}
+ ?>
++<!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BULK_BUTTON
+ <input class="btn btn-gavno btn-xs" type="submit" name="otk" value="Отказались" style="margin-bottom: 5px;" /> - 
++TEMP_LEGACY_20261029 END REFUSAL_BULK_BUTTON -->
+ <input class="btn btn-default btn-xs" type="reset" id="deleteol" value="Убрать отмеченые" style="margin-bottom: 5px;" /> - 
+ <?php if($userdata['otvetstven']==1){echo '<input onclick=\'return confirm("Для удаления счета нажмите OK!");\' class="btn btn-primary btn-xs" type="submit" name="deletemarked" value="Удалить" style="margin-bottom: 5px;" />';}?>
+ <p id="countdisplay" style="color:#fff; display:none;">Выбранно: <b style="font-size:15px;" id="count"></b></p>
+--- a/myogrn.php
++++ b/myogrn.php
+@@ -1,4 +1,13 @@
+ <?php
++// TEMP_LEGACY_20261029 BEGIN EDIT_REQUEST_GUARD
++// Временно отключено; порядок возврата описан в README изменений.
++if (isset($_GET['rand']) || isset($_POST['submitsave'])) {
++    header('HTTP/1.1 403 Forbidden');
++    header('Content-Type: text/plain; charset=utf-8');
++    exit('Редактирование счетов временно отключено.');
++}
++// TEMP_LEGACY_20261029 END EDIT_REQUEST_GUARD
++
+ # подключаем конфиг
+ include 'conf.php';  
+ 
+@@ -1136,7 +1145,12 @@
+ }
+ 
+ 
+-if(isset($_POST['submitsave'])){
++// TEMP_LEGACY_20261029 BEGIN EDIT_HANDLER
++// Исходный вход в замену состава сохранён для отката.
++// if(isset($_POST['submitsave'])){
++// TEMP_LEGACY_20261029 END EDIT_HANDLER
++if (false) { // Временно не выполняем старое сохранение.
++
+ 	
+ 	
+ $aktivn = "INSERT INTO `aktivn` (`data`,`deistvie`,`users`) VALUES ('". date("d.m.Y; H:i:s") ."','Счет изменен','".$userdata['users_id']."')";
+@@ -2220,9 +2234,12 @@
+ <input type="text" style="display:none;" name="shetrand" id="shetrand" value="'.$shetrand.'"><br>
+ <input type="submit" name="submitsch" value="Создать" class="btn btn-success col-md-12" /><br>';
+ }else{
+-echo '
+-<input type="text" style="display:none;" name="shetrand" id="shetrand" value="'.$shetrand.'"><br>
+-<input type="submit" name="submitsave" value="Сохранить" class="btn btn-success col-md-12" /><br>';
++// TEMP_LEGACY_20261029 BEGIN EDIT_SAVE_BUTTON
++// Кнопка сохранения старого счёта временно скрыта.
++// echo '
++// <input type="text" style="display:none;" name="shetrand" id="shetrand" value="'.$shetrand.'"><br>
++// <input type="submit" name="submitsave" value="Сохранить" class="btn btn-success col-md-12" /><br>';
++// TEMP_LEGACY_20261029 END EDIT_SAVE_BUTTON
+ }
+ ?>
+ 
+--- a/newschet.php
++++ b/newschet.php
+@@ -1,4 +1,13 @@
+ <?php
++// TEMP_LEGACY_20261029 BEGIN EDIT_REQUEST_GUARD
++// Временно отключено; порядок возврата описан в README изменений.
++if (isset($_GET['rand']) || isset($_POST['submitsave'])) {
++    header('HTTP/1.1 403 Forbidden');
++    header('Content-Type: text/plain; charset=utf-8');
++    exit('Редактирование счетов временно отключено.');
++}
++// TEMP_LEGACY_20261029 END EDIT_REQUEST_GUARD
++
+ # подключаем конфиг
+ include 'conf.php';  
+ 
+--- a/noprice.php
++++ b/noprice.php
+@@ -185,10 +185,14 @@
+ 		$result47 = mysql_query($q47);
+ 		$person47 = mysql_fetch_array($result47);
+ 		if($person47['otk'] == 0){
+-			$Qdelete = mysql_query("UPDATE `schet` SET `otk` =  '1' WHERE rand IN (".$impid.")") or die ("error in delete");
+-			if(isset($Qdelete)){
+-				echo "Успешно  ".$person."";
+-			}
++		    // TEMP_LEGACY_20261029 BEGIN BULK_OTK_CREATE
++		    // Создание отказа отключено; возврат статуса 0 ниже сохранён.
++		    // 			$Qdelete = mysql_query("UPDATE `schet` SET `otk` =  '1' WHERE rand IN (".$impid.")") or die ("error in delete");
++		    // 			if(isset($Qdelete)){
++		    // 				echo "Успешно  ".$person."";
++		    // 			}
++		    // TEMP_LEGACY_20261029 END BULK_OTK_CREATE
++		    echo 'Создание отказов временно отключено.';
+ 		}if($person47['otk'] == 1){
+ 			$Qdelete = mysql_query("UPDATE `schet` SET `otk` =  '0' WHERE rand IN (".$impid.")") or die ("error in delete");
+ 			if(isset($Qdelete)){
+@@ -264,7 +268,9 @@
+ <input class="btn btn-success btn-xs" type="submit" name="akt" value="Акт отгружен" style="margin-bottom: 5px;" /> - 
+ ';}
+ ?>
++<!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BULK_BUTTON
+ <input class="btn btn-gavno btn-xs" type="submit" name="otk" value="Отказались" style="margin-bottom: 5px;" /> - 
++TEMP_LEGACY_20261029 END REFUSAL_BULK_BUTTON -->
+ <input class="btn btn-default btn-xs" type="reset" id="deleteol" value="Убрать отмеченые" style="margin-bottom: 5px;" /> - 
+ <?php if($userdata['otvetstven']==1){echo '<input onclick=\'return confirm("Для удаления счета нажмите OK!");\' class="btn btn-primary btn-xs" type="submit" name="deletemarked" value="Удалить" style="margin-bottom: 5px;" />';}?>
+ <p id="countdisplay" style="color:#fff; display:none;">Выбранно: <b style="font-size:15px;" id="count"></b></p>
+--- a/otherogrn.php
++++ b/otherogrn.php
+@@ -1,4 +1,13 @@
+ <?php
++// TEMP_LEGACY_20261029 BEGIN EDIT_REQUEST_GUARD
++// Временно отключено; порядок возврата описан в README изменений.
++if (isset($_GET['rand']) || isset($_POST['submitsave'])) {
++    header('HTTP/1.1 403 Forbidden');
++    header('Content-Type: text/plain; charset=utf-8');
++    exit('Редактирование счетов временно отключено.');
++}
++// TEMP_LEGACY_20261029 END EDIT_REQUEST_GUARD
++
+ # подключаем конфиг
+ include 'conf.php';  
+ 
+--- a/otkazschet.php
++++ b/otkazschet.php
+@@ -1,126 +1,136 @@
+-<?
+-include 'conf.php';
+-if($_GET['tipschet']=="prod") {
+-    $delset="`del`='0',`prodlens`='1',`prodlenks`='1'";
+-}
+-else{
+-    $delset="`del`='0'";
+-}
+-$datet= date("Y-m-d");
+-$sql = mysql_query("UPDATE schet SET $delset,`dateotkaz` ='".$datet."',`ktootkaz` ='".$_GET['kto']."' WHERE `rand` = '" . $_GET['rand'] . "'");
+-$shetrand1 = rand(1000, 9999);
+-$shetrand2 = rand(1000, 9999) + $shetrand1;
+-$shetrand3 = rand(1000, 9999) + $shetrand2;
+-$shetrand4 = $shetrand1 + $shetrand2 + $shetrand3;
+-$shetrand = $shetrand4.date("Ymd");
++<?php
++// TEMP_LEGACY_20261029 BEGIN REFUSAL_REQUEST_GUARD
++// Временно отключено; порядок возврата описан в README изменений.
++    header('HTTP/1.1 403 Forbidden');
++    header('Content-Type: text/plain; charset=utf-8');
++    exit('Создание отказов временно отключено.');
++// TEMP_LEGACY_20261029 END REFUSAL_REQUEST_GUARD
+ 
+-$q = "SELECT * FROM `schet` WHERE rand ='".$_GET['rand']."'";
+-$result = mysql_query($q);
+-while($person  = mysql_fetch_assoc($result ))  {
+-/*$person = mysql_fetch_array($result);*/
+-if($person['akt']=="1") {
+-    $kols = $person['kolichschet'] + 1;
+-    if ($_GET['tipschet'] == "prod") {
+-        $datetim = date("d.m.y в H:i");
+-        $dated = date("d");
+-        $datem = date("m");
+-        $datey = date("Y");
+-    } else {
+-        $datetim = $person['data'];
+-        $dated = $person['d'];
+-        $datem = $person['m'];
+-        $datey = "20" . $person['y'];
+-    }
+-
+-        $azaza = "INSERT INTO `schet` (
+-        `ns`,
+-		`shetold`,
+-			`idkli`,
+-			`sortir`,
+-			`otdel`,
+-			`filial`,
+-			`god`,
+-			`nomerdog`,
+-			`nomerschet`,
+-			`kolichschet`,
+-			`nomerschetks`,
+-			`oplachenks`,
+-			`kvo`,
+-			`prod`,
+-			`goroddd`,
+-			`prodlen`,
+-			`skidka`,
+-			`priceks`,
+-			`price`,
+-			`ogrn`,
+-			`name`,
+-			`inn`,
+-			`kpp`,
+-			`produkt`,
+-			`kto`,
+-			`data`,
+-			`d`,
+-			`m`,
+-			`y`,
+-			`time`,
+-			`cher`,
+-			`rand`,
+-			`koment`,
+-			`lico`,
+-			`vladelec`,
+-			`oferta`,
+-			`prichotk`,
+-			`ktootkaz`,
+-			`dateotkaz`,
+-			`url`
+-		) VALUES (
+-		'" . date("Y") . $person['kto'] . $person['otdel'] . $kols . "',
+-		'" . $person['ns'] . "',
+-		'" . $person['idkli'] . "',
+-		'" . $person['sortir'] . "',
+-		'" . $person['otdel'] . "',
+-		'" . $person['filial'] . "',
+-		'" . date("Y") . "',
+-		'" . $person['nomerdog'] . "',
+-		'" . $person['nomerschet'] . "',
+-		'" . $kols . "',
+-		'" . $person['nomerschetks'] . "',
+-		'0',
+-		'" . $person['kvo'] . "',
+-		'" . $person['prod'] . "',
+-		'" . $person['goroddd'] . "',
+-		'" . $person['prodlen'] . "',
+-		'" . $person['skidka'] . "',
+-		'" . $person['priceks'] . "',
+-		'" . $person['price'] . "',
+-		'" . $person['ogrn'] . "',
+-		'" . $person['name'] . "',
+-		'" . $person['inn'] . "',
+-		'" . $person['kpp'] . "',
+-		'" . $person['produkt'] . "',
+-		'" . $person['kto'] . "',
+-		'" . $datetim . "',
+-			'" . $dated . "',
+-			'" . $datem . "',
+-			'" . $datey . "',
+-			'" . $person['time'] . "',
+-			'1',
+-			'" . $shetrand . "',
+-			'Отказ от счета " . $person['ns'] . "',
+-			'" . $person['lico'] . "',
+-			'" . $person['vladelec'] . "',
+-			'" . $person['oferta'] . "',
+-			'" . $_GET['tipotkaz'] . "',
+-			'" . $_GET['kto'] . "',
+-			'" . date("Y-m-d") . "',
+-			'" . $person['url'] . "'
+-		)";
+-        mysql_query($azaza) or die(mysql_error($link));
+-    }
+-
+-if($person['akt']=="0")
+-{
+-    $sqlli = mysql_query("UPDATE schet SET `cher`='1', `prichotk`='" . $_GET['tipotkaz'] . "' WHERE `rand` = '" . $_GET['rand'] . "'");
+-}
+-}
+-?>
+\ No newline at end of file
++// TEMP_LEGACY_20261029 BEGIN ORIGINAL_REFUSAL_HANDLER
++// Исходный обработчик отказа сохранён целиком для отката.
++// include 'conf.php';
++// if($_GET['tipschet']=="prod") {
++//     $delset="`del`='0',`prodlens`='1',`prodlenks`='1'";
++// }
++// else{
++//     $delset="`del`='0'";
++// }
++// $datet= date("Y-m-d");
++// $sql = mysql_query("UPDATE schet SET $delset,`dateotkaz` ='".$datet."',`ktootkaz` ='".$_GET['kto']."' WHERE `rand` = '" . $_GET['rand'] . "'");
++// $shetrand1 = rand(1000, 9999);
++// $shetrand2 = rand(1000, 9999) + $shetrand1;
++// $shetrand3 = rand(1000, 9999) + $shetrand2;
++// $shetrand4 = $shetrand1 + $shetrand2 + $shetrand3;
++// $shetrand = $shetrand4.date("Ymd");
++// 
++// $q = "SELECT * FROM `schet` WHERE rand ='".$_GET['rand']."'";
++// $result = mysql_query($q);
++// while($person  = mysql_fetch_assoc($result ))  {
++// /*$person = mysql_fetch_array($result);*/
++// if($person['akt']=="1") {
++//     $kols = $person['kolichschet'] + 1;
++//     if ($_GET['tipschet'] == "prod") {
++//         $datetim = date("d.m.y в H:i");
++//         $dated = date("d");
++//         $datem = date("m");
++//         $datey = date("Y");
++//     } else {
++//         $datetim = $person['data'];
++//         $dated = $person['d'];
++//         $datem = $person['m'];
++//         $datey = "20" . $person['y'];
++//     }
++// 
++//         $azaza = "INSERT INTO `schet` (
++//         `ns`,
++// 		`shetold`,
++// 			`idkli`,
++// 			`sortir`,
++// 			`otdel`,
++// 			`filial`,
++// 			`god`,
++// 			`nomerdog`,
++// 			`nomerschet`,
++// 			`kolichschet`,
++// 			`nomerschetks`,
++// 			`oplachenks`,
++// 			`kvo`,
++// 			`prod`,
++// 			`goroddd`,
++// 			`prodlen`,
++// 			`skidka`,
++// 			`priceks`,
++// 			`price`,
++// 			`ogrn`,
++// 			`name`,
++// 			`inn`,
++// 			`kpp`,
++// 			`produkt`,
++// 			`kto`,
++// 			`data`,
++// 			`d`,
++// 			`m`,
++// 			`y`,
++// 			`time`,
++// 			`cher`,
++// 			`rand`,
++// 			`koment`,
++// 			`lico`,
++// 			`vladelec`,
++// 			`oferta`,
++// 			`prichotk`,
++// 			`ktootkaz`,
++// 			`dateotkaz`,
++// 			`url`
++// 		) VALUES (
++// 		'" . date("Y") . $person['kto'] . $person['otdel'] . $kols . "',
++// 		'" . $person['ns'] . "',
++// 		'" . $person['idkli'] . "',
++// 		'" . $person['sortir'] . "',
++// 		'" . $person['otdel'] . "',
++// 		'" . $person['filial'] . "',
++// 		'" . date("Y") . "',
++// 		'" . $person['nomerdog'] . "',
++// 		'" . $person['nomerschet'] . "',
++// 		'" . $kols . "',
++// 		'" . $person['nomerschetks'] . "',
++// 		'0',
++// 		'" . $person['kvo'] . "',
++// 		'" . $person['prod'] . "',
++// 		'" . $person['goroddd'] . "',
++// 		'" . $person['prodlen'] . "',
++// 		'" . $person['skidka'] . "',
++// 		'" . $person['priceks'] . "',
++// 		'" . $person['price'] . "',
++// 		'" . $person['ogrn'] . "',
++// 		'" . $person['name'] . "',
++// 		'" . $person['inn'] . "',
++// 		'" . $person['kpp'] . "',
++// 		'" . $person['produkt'] . "',
++// 		'" . $person['kto'] . "',
++// 		'" . $datetim . "',
++// 			'" . $dated . "',
++// 			'" . $datem . "',
++// 			'" . $datey . "',
++// 			'" . $person['time'] . "',
++// 			'1',
++// 			'" . $shetrand . "',
++// 			'Отказ от счета " . $person['ns'] . "',
++// 			'" . $person['lico'] . "',
++// 			'" . $person['vladelec'] . "',
++// 			'" . $person['oferta'] . "',
++// 			'" . $_GET['tipotkaz'] . "',
++// 			'" . $_GET['kto'] . "',
++// 			'" . date("Y-m-d") . "',
++// 			'" . $person['url'] . "'
++// 		)";
++//         mysql_query($azaza) or die(mysql_error($link));
++//     }
++// 
++// if($person['akt']=="0")
++// {
++//     $sqlli = mysql_query("UPDATE schet SET `cher`='1', `prichotk`='" . $_GET['tipotkaz'] . "' WHERE `rand` = '" . $_GET['rand'] . "'");
++// }
++// }
++// TEMP_LEGACY_20261029 END ORIGINAL_REFUSAL_HANDLER
++?>
+--- a/pusya.php
++++ b/pusya.php
+@@ -1,4 +1,13 @@
+ <?php
++// TEMP_LEGACY_20261029 BEGIN EDIT_DATE_REQUEST_GUARD
++// Временно отключено; порядок возврата описан в README изменений.
++if (isset($_GET['date_schet'])) {
++    header('HTTP/1.1 403 Forbidden');
++    header('Content-Type: text/plain; charset=utf-8');
++    exit('Редактирование счетов временно отключено.');
++}
++// TEMP_LEGACY_20261029 END EDIT_DATE_REQUEST_GUARD
++
+ include 'conf.php';  
+ # проверка авторизации
+ if (isset($_COOKIE['id']) and isset($_COOKIE['hash'])) 
+@@ -284,7 +293,12 @@
+ mysql_query($koment) or die(mysql_error($link));
+ }
+ 
+-if(isset($_GET['date_schet'])){
++// TEMP_LEGACY_20261029 BEGIN EDIT_DATE_HANDLER
++// Старый обработчик даты временно не выполняется.
++// if(isset($_GET['date_schet'])){
++// TEMP_LEGACY_20261029 END EDIT_DATE_HANDLER
++if (false) { // Временно отключено редактирование даты счёта.
++
+ $y = strstr($_GET['date_schet'],"-", true);
+ $m = mb_substr(strstr($_GET['date_schet'],"-"),1,2,'UTF-8');
+ $d = mb_substr(strstr($_GET['date_schet'],"-"),4,2,'UTF-8');
+--- a/schetdataedit.php
++++ b/schetdataedit.php
+@@ -1,4 +1,11 @@
+ <?php
++// TEMP_LEGACY_20261029 BEGIN EDIT_DETAILS_GUARD
++// Временно отключено; порядок возврата описан в README изменений.
++    header('HTTP/1.1 403 Forbidden');
++    header('Content-Type: text/plain; charset=utf-8');
++    exit('Редактирование счетов временно отключено.');
++// TEMP_LEGACY_20261029 END EDIT_DETAILS_GUARD
++
+ include 'conf.php';  
+ $pav = "SELECT * FROM schet WHERE del = '0' AND rand = $_GET[id]";
+ $pavresult = mysql_query($pav);
+--- a/serchtohaakt.php
++++ b/serchtohaakt.php
+@@ -343,7 +343,10 @@
+ $idkli = "SELECT * FROM ogrn WHERE ogrn =".$roww['ogrn'];
+ $ridkli = mysql_query($idkli);
+ $pidkli = mysql_fetch_array($ridkli);
+-$Qdelete = mysql_query("UPDATE `schet` SET `idkli` =  '".$pidkli['id']."' WHERE ogrn =".$roww['ogrn']);
++// TEMP_LEGACY_20261029 BEGIN AUTO_CLIENT_REASSIGN
++// Временно отключено: просмотр страницы не должен менять клиента счёта.
++// $Qdelete = mysql_query("UPDATE `schet` SET `idkli` =  '".$pidkli['id']."' WHERE ogrn =".$roww['ogrn']);
++// TEMP_LEGACY_20261029 END AUTO_CLIENT_REASSIGN
+ 
+ 
+ if($roww['url'] == "0"){
+--- a/setschet.php
++++ b/setschet.php
+@@ -154,8 +154,14 @@
+ <?
+ if($pavoir['kto']==$_GET['us'])
+ {
+-echo '<a onclick="addb()"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Изменить список продуктов</a>'; 
+-echo '<a onclick="editb()"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Изменить данные</a> ';
++// TEMP_LEGACY_20261029 BEGIN EDIT_PRODUCTS_BUTTON
++// Временное отключение редактирования старого счёта.
++// echo '<a onclick="addb()"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Изменить список продуктов</a>'; 
++// TEMP_LEGACY_20261029 END EDIT_PRODUCTS_BUTTON
++// TEMP_LEGACY_20261029 BEGIN EDIT_DETAILS_BUTTON
++// Временное отключение редактирования старого счёта.
++// echo '<a onclick="editb()"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Изменить данные</a> ';
++// TEMP_LEGACY_20261029 END EDIT_DETAILS_BUTTON
+ }
+ ?>
+ <a onclick="contaiq()"><div id="contaiq"></div></a> 
+@@ -275,7 +281,10 @@
+ $idkli = "SELECT * FROM ogrn WHERE ogrn =".$row['ogrn'];
+ $ridkli = mysql_query($idkli);
+ $pidkli = mysql_fetch_array($ridkli);
+-$Qdelete = mysql_query("UPDATE `schet` SET `idkli` =  '".$pidkli['id']."' WHERE ogrn =".$row['ogrn']);
++// TEMP_LEGACY_20261029 BEGIN AUTO_CLIENT_REASSIGN
++// Временно отключено: просмотр страницы не должен менять клиента счёта.
++// $Qdelete = mysql_query("UPDATE `schet` SET `idkli` =  '".$pidkli['id']."' WHERE ogrn =".$row['ogrn']);
++// TEMP_LEGACY_20261029 END AUTO_CLIENT_REASSIGN
+ if($row['url'] == "0"){
+ }else{
+ echo "&nbsp;&nbsp;<a target='_blank' href='".$row['url']."'><img src='img/ks.png'></a>";
+--- a/sizbran.php
++++ b/sizbran.php
+@@ -236,10 +236,14 @@
+ 		$result47 = mysql_query($q47);
+ 		$person47 = mysql_fetch_array($result47);
+ 		if($person47['otk'] == 0){
+-			$Qdelete = mysql_query("UPDATE `schet` SET `otk` =  '1' WHERE rand IN (".$impid.")") or die ("error in delete");
+-			if(isset($Qdelete)){
+-				echo "Успешно  ".$person."";
+-			}
++		    // TEMP_LEGACY_20261029 BEGIN BULK_OTK_CREATE
++		    // Создание отказа отключено; возврат статуса 0 ниже сохранён.
++		    // 			$Qdelete = mysql_query("UPDATE `schet` SET `otk` =  '1' WHERE rand IN (".$impid.")") or die ("error in delete");
++		    // 			if(isset($Qdelete)){
++		    // 				echo "Успешно  ".$person."";
++		    // 			}
++		    // TEMP_LEGACY_20261029 END BULK_OTK_CREATE
++		    echo 'Создание отказов временно отключено.';
+ 		}if($person47['otk'] == 1){
+ 			$Qdelete = mysql_query("UPDATE `schet` SET `otk` =  '0' WHERE rand IN (".$impid.")") or die ("error in delete");
+ 			if(isset($Qdelete)){
+@@ -315,7 +319,9 @@
+ <input class="btn btn-success btn-xs" type="submit" name="akt" value="Акт отгружен" style="margin-bottom: 5px;" /> - 
+ ';}
+ ?>
++<!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BULK_BUTTON
+ <input class="btn btn-gavno btn-xs" type="submit" name="otk" value="Отказались" style="margin-bottom: 5px;" /> - 
++TEMP_LEGACY_20261029 END REFUSAL_BULK_BUTTON -->
+ <input class="btn btn-default btn-xs" type="reset" id="deleteol" value="Убрать отмеченые" style="margin-bottom: 5px;" /> - 
+ <?php if($userdata['otvetstven']==1){echo '<input onclick=\'return confirm("Для удаления счета нажмите OK!");\' class="btn btn-primary btn-xs" type="submit" name="deletemarked" value="Удалить" style="margin-bottom: 5px;" />';}?>
+ <p id="countdisplay" style="color:#fff; display:none;">Выбранно: <b style="font-size:15px;" id="count"></b></p>
+--- a/tablschetosn.php
++++ b/tablschetosn.php
+@@ -837,7 +837,9 @@
+         <form class="contact_form" method="POST">
+             <div id="kalm<?echo $res['rand'];?>"style="float: left;background: white;border-radius: 3px;">
+                 <label class="visto" id="vist<?echo $res['rand'];?>"onclick="window.open('https://voovi.ru/newschet.php?id=<?echo $res['idkli'];?>&parent=<?echo $res['produkt'];?>&ogrn=<?echo $res['orgh'];?>&inn=<?echo $res['inn'];?>&kpp=<?echo $res['kpp'];?>&tip=<?echo $_GET['ogr'];?>&head=&oldns=<?echo $res['ns']?>')">Выставить счет</label>
+-                <label class="otkaz" id="otkaz<?echo $res['rand'];?>">Отказать</label>
++                <!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BUTTON
++<label class="otkaz" id="otkaz<?echo $res['rand'];?>">Отказать</label>
++                TEMP_LEGACY_20261029 END REFUSAL_BUTTON -->
+                 </div>
+             <div id="prich<?echo $res['rand'];?>"style="display: none;position: relative;float: left;right: 480px;background: white;border-radius: 3px;bottom: 250px;padding-left: 10px;height: 750px;overflow-y: scroll;">
+                 <?php $rotkaz = mysql_query("SELECT * FROM `prichotk`");
+@@ -1094,7 +1096,9 @@
+         <form class="contact_form" method="POST">
+             <div id="kalm<?echo $res['rand'];?>"style="float: left;background: white;border-radius: 3px;">
+                 <label class="visto" id="vist<?echo $res['rand'];?>"onclick="window.open('https://voovi.ru/newschet.php?id=<?echo $res['idkli'];?>&parent=<?echo $res['produkt'];?>&ogrn=<?echo $res['orgh'];?>&inn=<?echo $res['inn'];?>&kpp=<?echo $res['kpp'];?>&tip=<?echo $_GET['ogr'];?>&head=&oldns=<?echo $res['ns']?>')">Выставить счет</label>
+-                <label class="otkaz" id="otkaz<?echo $res['rand'];?>">Отказать</label>
++                <!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BUTTON
++<label class="otkaz" id="otkaz<?echo $res['rand'];?>">Отказать</label>
++                TEMP_LEGACY_20261029 END REFUSAL_BUTTON -->
+             </div>
+             <div id="prich<?echo $res['rand'];?>"style="display: none;position: relative;float: left;right: 480px;background: white;border-radius: 3px;bottom: 250px;padding-left: 10px;height: 750px;overflow-y: scroll;">
+                 <?php $rotkaz = mysql_query("SELECT * FROM `prichotk`");
+@@ -1338,7 +1342,9 @@
+         <form class="contact_form" method="POST">
+             <div id="kalmp<?echo $res['rand'];?>"style="float: left;background: white;border-radius: 3px;">
+                 <label class="visto" id="vistp<?echo $res['rand'];?>"onclick="window.open('https://voovi.ru/newschet.php?id=<?echo $res['idkli'];?>&parent=<?echo $res['produkt'];?>&ogrn=<?echo $res['orgh'];?>&inn=<?echo $res['inn'];?>&kpp=<?echo $res['kpp'];?>&tip=<?echo $_GET['ogr'];?>&head=&oldns=<?echo $res['ns']?>')">Выставить счет</label>
+-                <label class="otkaz" id="otkazppp<?echo $res['rand'];?>">Отказать</label>
++                <!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BUTTON
++<label class="otkaz" id="otkazppp<?echo $res['rand'];?>">Отказать</label>
++                TEMP_LEGACY_20261029 END REFUSAL_BUTTON -->
+             </div>
+             <div id="prichp<?echo $res['rand'];?>"style="display: none;position: relative;float: left;right: 480px;background: white;border-radius: 3px;bottom: 200px;padding-left: 10px;height: 750px;overflow-y: scroll;">
+                 <?php $rotkaz = mysql_query("SELECT * FROM `prichotk`");
+@@ -1586,7 +1592,9 @@
+         <form class="contact_form" method="POST">
+             <div id="kalm<?echo $res['rand'];?>"style="float: left;background: white;border-radius: 3px;">
+                 <label class="visto" id="vist<?echo $res['rand'];?>"onclick="window.open('https://voovi.ru/newschet.php?id=<?echo $res['idkli'];?>&parent=<?echo $res['produkt'];?>&ogrn=<?echo $res['orgh'];?>&inn=<?echo $res['inn'];?>&kpp=<?echo $res['kpp'];?>&tip=<?echo $_GET['ogr'];?>&head=&oldns=<?echo $res['ns']?>')">Выставить счет</label>
+-                <label class="otkaz" id="otkaz<?echo $res['rand'];?>">Отказать</label>
++                <!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BUTTON
++<label class="otkaz" id="otkaz<?echo $res['rand'];?>">Отказать</label>
++                TEMP_LEGACY_20261029 END REFUSAL_BUTTON -->
+             </div>
+             <div id="prich<?echo $res['rand'];?>"style="display: none;position: relative;float: left;right: 480px;background: white;border-radius: 3px;bottom: 250px;padding-left: 10px;height: 750px;overflow-y: scroll;">
+                 <?php $rotkaz = mysql_query("SELECT * FROM `prichotk`");
+@@ -1910,7 +1918,9 @@
+         <form class="contact_form" method="POST">
+             <div id="kalm<?echo $ress['rand'];?>"style="float: left;background: white;border-radius: 3px;">
+ 
+-                <label class="otkaz" id="otkaz<?echo $ress['rand'];?>">Отказать</label>
++                <!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BUTTON
++<label class="otkaz" id="otkaz<?echo $ress['rand'];?>">Отказать</label>
++                TEMP_LEGACY_20261029 END REFUSAL_BUTTON -->
+             </div>
+             <div id="prich<?echo $ress['rand'];?>"style="display: none;position: relative;float: left;right: 480px;background: white;border-radius: 3px;bottom: 250px;padding-left: 10px;height: 750px;overflow-y: scroll;">
+                 <?php $rotkaz = mysql_query("SELECT * FROM `prichotk`");
+@@ -2178,7 +2188,9 @@
+     <div class="modal-windowm<?echo $ress['rand'];?>"style=" position: fixed;top:50%;left:95%;margin:-100px 0 0 -200px;width:450px;height:auto;border-radius:10px;display:none;background:transparent; z-index:9999;">
+         <form class="contact_form" method="POST">
+             <div id="kalm<?echo $ress['rand'];?>"style="float: left;background: white;border-radius: 3px;">
+-                <label class="otkaz" id="otkaz<?echo $ress['rand'];?>">Отказать</label>
++                <!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BUTTON
++<label class="otkaz" id="otkaz<?echo $ress['rand'];?>">Отказать</label>
++                TEMP_LEGACY_20261029 END REFUSAL_BUTTON -->
+             </div>
+             <div id="prich<?echo $ress['rand'];?>"style="display: none;position: relative;float: left;right: 480px;background: white;border-radius: 3px;bottom: 250px;padding-left: 10px;height: 750px;overflow-y: scroll;">
+                 <?php $rotkaz = mysql_query("SELECT * FROM `prichotk`");
+@@ -2509,7 +2521,9 @@
+         <form class="contact_form" method="POST">
+             <div id="kalm<?echo $reso['rand'];?>"style="float: left;background: white;border-radius: 3px;">
+ 
+-                <label class="otkaz" id="otkaz<?echo $reso['rand'];?>">Отказать</label>
++                <!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BUTTON
++<label class="otkaz" id="otkaz<?echo $reso['rand'];?>">Отказать</label>
++                TEMP_LEGACY_20261029 END REFUSAL_BUTTON -->
+             </div>
+             <div id="prich<?echo $reso['rand'];?>"style="display: none;position: relative;float: left;right: 480px;background: white;border-radius: 3px;bottom: 200px;padding-left: 10px;height: 750px;overflow-y: scroll;">
+                 <?php $rotkaz = mysql_query("SELECT * FROM `prichotk`");
+@@ -2833,7 +2847,9 @@
+     <div class="modal-windowm<?echo $reso['rand'];?>"style=" position: fixed;top:50%;left:95%;margin:-100px 0 0 -200px;width:450px;height:auto;border-radius:10px;display:none;background:transparent; z-index:9999;">
+         <form class="contact_form" method="POST">
+             <div id="kalm<?echo $reso['rand'];?>"style="float: left;background: white;border-radius: 3px;">
+-                <label class="otkaz" id="otkaz<?echo $reso['rand'];?>">Отказать</label>
++                <!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BUTTON
++<label class="otkaz" id="otkaz<?echo $reso['rand'];?>">Отказать</label>
++                TEMP_LEGACY_20261029 END REFUSAL_BUTTON -->
+             </div>
+             <div id="prich<?echo $reso['rand'];?>"style="display: none;position: relative;float: left;right: 480px;background: white;border-radius: 3px;bottom: 200px;padding-left: 10px;height: 750px;overflow-y: scroll;">
+                 <?php $rotkaz = mysql_query("SELECT * FROM `prichotk`");
+@@ -3067,7 +3083,9 @@
+     <div class="modal-windowm<?echo $respos['rand'];?>"style=" position: fixed;top:50%;left:95%;margin:-100px 0 0 -200px;width:450px;height:auto;border-radius:10px;display:none;background:transparent; z-index:9999;">
+         <form class="contact_form" method="POST">
+             <div id="kalm<?echo $respos['rand'];?>"style="float: left;background: white;border-radius: 3px;">
+-                <label class="otkaz" id="otkaz<?echo $respos['rand'];?>">Отказать</label>
++                <!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BUTTON
++<label class="otkaz" id="otkaz<?echo $respos['rand'];?>">Отказать</label>
++                TEMP_LEGACY_20261029 END REFUSAL_BUTTON -->
+             </div>
+             <div id="prich<?echo $respos['rand'];?>"style="display: none;position: relative;float: left;right: 480px;background: white;border-radius: 3px;bottom: 200px;padding-left: 10px;height: 750px;overflow-y: scroll;">
+                 <?php $rotkaz = mysql_query("SELECT * FROM `prichotk`");
+@@ -3301,7 +3319,9 @@
+     <div class="modal-windowm<?echo $respos['rand'];?>"style=" position: fixed;top:50%;left:95%;margin:-100px 0 0 -200px;width:450px;height:auto;border-radius:10px;display:none;background:transparent; z-index:9999;">
+         <form class="contact_form" method="POST">
+             <div id="kalm<?echo $respos['rand'];?>"style="float: left;background: white;border-radius: 3px;">
+-                <label class="otkaz" id="otkaz<?echo $respos['rand'];?>">Отказать</label>
++                <!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BUTTON
++<label class="otkaz" id="otkaz<?echo $respos['rand'];?>">Отказать</label>
++                TEMP_LEGACY_20261029 END REFUSAL_BUTTON -->
+             </div>
+             <div id="prich<?echo $respos['rand'];?>"style="display: none;position: relative;float: left;right: 480px;background: white;border-radius: 3px;bottom: 200px;padding-left: 10px;height: 750px;overflow-y: scroll;">
+                 <?php $rotkaz = mysql_query("SELECT * FROM `prichotk`");
+@@ -3566,7 +3586,9 @@
+     <div class="modal-windowm<?echo $resyv['rand'];?>"style=" position: fixed;top:50%;left:95%;margin:-100px 0 0 -200px;width:450px;height:auto;border-radius:10px;display:none;background:transparent; z-index:9999;">
+         <form class="contact_form" method="POST">
+             <div id="kalm<?echo $resyv['rand'];?>"style="float: left;background: white;border-radius: 3px;">
+-                <label class="otkaz" id="otkaz<?echo $resyv['rand'];?>">Отказать</label>
++                <!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BUTTON
++<label class="otkaz" id="otkaz<?echo $resyv['rand'];?>">Отказать</label>
++                TEMP_LEGACY_20261029 END REFUSAL_BUTTON -->
+             </div>
+             <div id="prich<?echo $resyv['rand'];?>"style="display: none;position: relative;float: left;right: 480px;background: white;border-radius: 3px;bottom: 200px;padding-left: 10px;height: 750px;overflow-y: scroll;">
+                 <?php $rotkaz = mysql_query("SELECT * FROM `prichotk`");
+@@ -3830,7 +3852,9 @@
+     <div class="modal-windowm<?echo $resyv['rand'];?>"style=" position: fixed;top:50%;left:95%;margin:-100px 0 0 -200px;width:450px;height:auto;border-radius:10px;display:none;background:transparent; z-index:9999;">
+         <form class="contact_form" method="POST">
+             <div id="kalm<?echo $resyv['rand'];?>"style="float: left;background: white;border-radius: 3px;">
+-                <label class="otkaz" id="otkaz<?echo $resyv['rand'];?>">Отказать</label>
++                <!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BUTTON
++<label class="otkaz" id="otkaz<?echo $resyv['rand'];?>">Отказать</label>
++                TEMP_LEGACY_20261029 END REFUSAL_BUTTON -->
+             </div>
+             <div id="prich<?echo $resyv['rand'];?>"style="display: none;position: relative;float: left;right: 480px;background: white;border-radius: 3px;bottom: 200px;padding-left: 10px;height: 750px;overflow-y: scroll;">
+                 <?php $rotkaz = mysql_query("SELECT * FROM `prichotk`");
+@@ -4095,7 +4119,9 @@
+     <div class="modal-windowm<?echo $resrna['rand'];?>"style=" position: fixed;top:50%;left:95%;margin:-100px 0 0 -200px;width:450px;height:auto;border-radius:10px;display:none;background:transparent; z-index:9999;">
+         <form class="contact_form" method="POST">
+             <div id="kalm<?echo $resrna['rand'];?>"style="float: left;background: white;border-radius: 3px;">
+-                <label class="otkaz" id="otkaz<?echo $resrna['rand'];?>">Отказать</label>
++                <!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BUTTON
++<label class="otkaz" id="otkaz<?echo $resrna['rand'];?>">Отказать</label>
++                TEMP_LEGACY_20261029 END REFUSAL_BUTTON -->
+             </div>
+             <div id="prich<?echo $resrna['rand'];?>"style="display: none;position: relative;float: left;right: 480px;background: white;border-radius: 3px;bottom: 200px;padding-left: 10px;height: 750px;overflow-y: scroll;">
+                 <?php $rotkaz = mysql_query("SELECT * FROM `prichotk`");
+@@ -4359,7 +4385,9 @@
+     <div class="modal-windowm<?echo $resrna['rand'];?>"style=" position: fixed;top:50%;left:95%;margin:-100px 0 0 -200px;width:450px;height:auto;border-radius:10px;display:none;background:transparent; z-index:9999;">
+         <form class="contact_form" method="POST">
+             <div id="kalm<?echo $resrna['rand'];?>"style="float: left;background: white;border-radius: 3px;">
+-                <label class="otkaz" id="otkaz<?echo $resrna['rand'];?>">Отказать</label>
++                <!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BUTTON
++<label class="otkaz" id="otkaz<?echo $resrna['rand'];?>">Отказать</label>
++                TEMP_LEGACY_20261029 END REFUSAL_BUTTON -->
+             </div>
+             <div id="prich<?echo $resrna['rand'];?>"style="display: none;position: relative;float: left;right: 480px;background: white;border-radius: 3px;bottom: 200px;padding-left: 10px;height: 750px;overflow-y: scroll;">
+                 <?php $rotkaz = mysql_query("SELECT * FROM `prichotk`");
+@@ -4593,7 +4621,9 @@
+     <div class="modal-windowm<?echo $resatk['rand'];?>"style=" position: fixed;top:50%;left:95%;margin:-100px 0 0 -200px;width:450px;height:auto;border-radius:10px;display:none;background:transparent; z-index:9999;">
+         <form class="contact_form" method="POST">
+             <div id="kalm<?echo $resatk['rand'];?>"style="float: left;background: white;border-radius: 3px;">
+-                <label class="otkaz" id="otkaz<?echo $resatk['rand'];?>">Отказать</label>
++                <!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BUTTON
++<label class="otkaz" id="otkaz<?echo $resatk['rand'];?>">Отказать</label>
++                TEMP_LEGACY_20261029 END REFUSAL_BUTTON -->
+             </div>
+             <div id="prich<?echo $resatk['rand'];?>"style="display: none;position: relative;float: left;right: 480px;background: white;border-radius: 3px;bottom: 200px;padding-left: 10px;height: 750px;overflow-y: scroll;">
+                 <?php $rotkaz = mysql_query("SELECT * FROM `prichotk`");
+@@ -4827,7 +4857,9 @@
+     <div class="modal-windowm<?echo $resatk['rand'];?>"style=" position: fixed;top:50%;left:95%;margin:-100px 0 0 -200px;width:450px;height:auto;border-radius:10px;display:none;background:transparent; z-index:9999;">
+         <form class="contact_form" method="POST">
+             <div id="kalm<?echo $resatk['rand'];?>"style="float: left;background: white;border-radius: 3px;">
+-                <label class="otkaz" id="otkaz<?echo $resatk['rand'];?>">Отказать</label>
++                <!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BUTTON
++<label class="otkaz" id="otkaz<?echo $resatk['rand'];?>">Отказать</label>
++                TEMP_LEGACY_20261029 END REFUSAL_BUTTON -->
+             </div>
+             <div id="prich<?echo $resatk['rand'];?>"style="display: none;position: relative;float: left;right: 480px;background: white;border-radius: 3px;bottom: 200px;padding-left: 10px;height: 750px;overflow-y: scroll;">
+                 <?php $rotkaz = mysql_query("SELECT * FROM `prichotk`");
+@@ -5061,7 +5093,9 @@
+     <div class="modal-windowm<?echo $resotk['rand'];?>"style=" position: fixed;top:50%;left:95%;margin:-100px 0 0 -200px;width:450px;height:auto;border-radius:10px;display:none;background:transparent; z-index:9999;">
+         <form class="contact_form" method="POST">
+             <div id="kalm<?echo $resotk['rand'];?>"style="float: left;background: white;border-radius: 3px;">
+-                <label class="otkaz" id="otkaz<?echo $resotk['rand'];?>">Отказать</label>
++                <!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BUTTON
++<label class="otkaz" id="otkaz<?echo $resotk['rand'];?>">Отказать</label>
++                TEMP_LEGACY_20261029 END REFUSAL_BUTTON -->
+             </div>
+             <div id="prich<?echo $resotk['rand'];?>"style="display: none;position: relative;float: left;right: 480px;background: white;border-radius: 3px;bottom: 200px;padding-left: 10px;height: 750px;overflow-y: scroll;">
+                 <?php $rotkaz = mysql_query("SELECT * FROM `prichotk`");
+@@ -5296,7 +5330,9 @@
+     <div class="modal-windowm<?echo $resotk['rand'];?>"style=" position: fixed;top:50%;left:95%;margin:-100px 0 0 -200px;width:450px;height:auto;border-radius:10px;display:none;background:transparent; z-index:9999;">
+         <form class="contact_form" method="POST">
+             <div id="kalm<?echo $resotk['rand'];?>"style="float: left;background: white;border-radius: 3px;">
+-                <label class="otkaz" id="otkaz<?echo $resotk['rand'];?>">Отказать</label>
++                <!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BUTTON
++<label class="otkaz" id="otkaz<?echo $resotk['rand'];?>">Отказать</label>
++                TEMP_LEGACY_20261029 END REFUSAL_BUTTON -->
+             </div>
+             <div id="prich<?echo $resotk['rand'];?>"style="display: none;position: relative;float: left;right: 480px;background: white;border-radius: 3px;bottom: 200px;padding-left: 10px;height: 750px;overflow-y: scroll;">
+                 <?php $rotkaz = mysql_query("SELECT * FROM `prichotk`");
+@@ -5530,7 +5566,9 @@
+     <div class="modal-windowm<?echo $rescher['rand'];?>"style=" position: fixed;top:50%;left:95%;margin:-100px 0 0 -200px;width:450px;height:auto;border-radius:10px;display:none;background:transparent; z-index:9999;">
+         <form class="contact_form" method="POST">
+             <div id="kalm<?echo $rescher['rand'];?>"style="float: left;background: white;border-radius: 3px;">
+-                <label class="otkaz" id="otkaz<?echo $rescher['rand'];?>">Отказать</label>
++                <!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BUTTON
++<label class="otkaz" id="otkaz<?echo $rescher['rand'];?>">Отказать</label>
++                TEMP_LEGACY_20261029 END REFUSAL_BUTTON -->
+             </div>
+             <div id="prich<?echo $rescher['rand'];?>"style="display: none;position: relative;float: left;right: 480px;background: white;border-radius: 3px;bottom: 200px;padding-left: 10px;height: 750px;overflow-y: scroll;">
+                 <?php $rotkaz = mysql_query("SELECT * FROM `prichotk`");
+@@ -5765,7 +5803,9 @@
+     <div class="modal-windowm<?echo $rescher['rand'];?>"style=" position: fixed;top:50%;left:95%;margin:-100px 0 0 -200px;width:450px;height:auto;border-radius:10px;display:none;background:transparent; z-index:9999;">
+         <form class="contact_form" method="POST">
+             <div id="kalm<?echo $rescher['rand'];?>"style="float: left;background: white;border-radius: 3px;">
+-                <label class="otkaz" id="otkaz<?echo $rescher['rand'];?>">Отказать</label>
++                <!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BUTTON
++<label class="otkaz" id="otkaz<?echo $rescher['rand'];?>">Отказать</label>
++                TEMP_LEGACY_20261029 END REFUSAL_BUTTON -->
+             </div>
+             <div id="prich<?echo $rescher['rand'];?>"style="display: none;position: relative;float: left;right: 480px;background: white;border-radius: 3px;bottom: 200px;padding-left: 10px;height: 750px;overflow-y: scroll;">
+                 <?php $rotkaz = mysql_query("SELECT * FROM `prichotk`");
+@@ -6008,7 +6048,9 @@
+     <div class="modal-windowm<?echo $resvoz['rand'];?>"style=" position: fixed;top:50%;left:95%;margin:-100px 0 0 -200px;width:450px;height:auto;border-radius:10px;display:none;background:transparent; z-index:9999;">
+         <form class="contact_form" method="POST">
+             <div id="kalm<?echo $resvoz['rand'];?>"style="float: left;background: white;border-radius: 3px;">
+-                <label class="otkaz" id="otkaz<?echo $resvoz['rand'];?>">Отказать</label>
++                <!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BUTTON
++<label class="otkaz" id="otkaz<?echo $resvoz['rand'];?>">Отказать</label>
++                TEMP_LEGACY_20261029 END REFUSAL_BUTTON -->
+             </div>
+             <div id="prich<?echo $resvoz['rand'];?>"style="display: none;position: relative;float: left;right: 480px;background: white;border-radius: 3px;bottom: 200px;padding-left: 10px;height: 750px;overflow-y: scroll;">
+                 <?php $rotkaz = mysql_query("SELECT * FROM `prichotk`");
+@@ -6250,7 +6292,9 @@
+     <div class="modal-windowm<?echo $resvoz['rand'];?>"style=" position: fixed;top:50%;left:95%;margin:-100px 0 0 -200px;width:450px;height:auto;border-radius:10px;display:none;background:transparent; z-index:9999;">
+         <form class="contact_form" method="POST">
+             <div id="kalm<?echo $resvoz['rand'];?>"style="float: left;background: white;border-radius: 3px;">
+-                <label class="otkaz" id="otkaz<?echo $resvoz['rand'];?>">Отказать</label>
++                <!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BUTTON
++<label class="otkaz" id="otkaz<?echo $resvoz['rand'];?>">Отказать</label>
++                TEMP_LEGACY_20261029 END REFUSAL_BUTTON -->
+             </div>
+             <div id="prich<?echo $resvoz['rand'];?>"style="display: none;position: relative;float: left;right: 480px;background: white;border-radius: 3px;bottom: 200px;padding-left: 10px;height: 750px;overflow-y: scroll;">
+                 <?php $rotkaz = mysql_query("SELECT * FROM `prichotk`");
+@@ -6493,7 +6537,9 @@
+     <div class="modal-windowm<?echo $respere['rand'];?>"style=" position: fixed;top:50%;left:95%;margin:-100px 0 0 -200px;width:450px;height:auto;border-radius:10px;display:none;background:transparent; z-index:9999;">
+         <form class="contact_form" method="POST">
+             <div id="kalm<?echo $respere['rand'];?>"style="float: left;background: white;border-radius: 3px;">
+-                <label class="otkaz" id="otkaz<?echo $respere['rand'];?>">Отказать</label>
++                <!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BUTTON
++<label class="otkaz" id="otkaz<?echo $respere['rand'];?>">Отказать</label>
++                TEMP_LEGACY_20261029 END REFUSAL_BUTTON -->
+             </div>
+             <div id="prich<?echo $respere['rand'];?>"style="display: none;position: relative;float: left;right: 480px;background: white;border-radius: 3px;bottom: 200px;padding-left: 10px;height: 750px;overflow-y: scroll;">
+                 <?php $rotkaz = mysql_query("SELECT * FROM `prichotk`");
+@@ -6736,7 +6782,9 @@
+     <div class="modal-windowm<?echo $respere['rand'];?>"style=" position: fixed;top:50%;left:95%;margin:-100px 0 0 -200px;width:450px;height:auto;border-radius:10px;display:none;background:transparent; z-index:9999;">
+         <form class="contact_form" method="POST">
+             <div id="kalm<?echo $respere['rand'];?>"style="float: left;background: white;border-radius: 3px;">
+-                <label class="otkaz" id="otkaz<?echo $respere['rand'];?>">Отказать</label>
++                <!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BUTTON
++<label class="otkaz" id="otkaz<?echo $respere['rand'];?>">Отказать</label>
++                TEMP_LEGACY_20261029 END REFUSAL_BUTTON -->
+             </div>
+             <div id="prich<?echo $respere['rand'];?>"style="display: none;position: relative;float: left;right: 480px;background: white;border-radius: 3px;bottom: 200px;padding-left: 10px;height: 750px;overflow-y: scroll;">
+                 <?php $rotkaz = mysql_query("SELECT * FROM `prichotk`");
+@@ -7148,7 +7196,9 @@
+             <div class="modal-windowm<?echo $resschetall['rand'];?>"style=" position: fixed;top:50%;left:95%;margin:-100px 0 0 -200px;width:450px;height:auto;border-radius:10px;display:none;background:transparent; z-index:9999;">
+                 <form class="contact_form" method="POST">
+                     <div id="kalm<?echo $resschetall['rand'];?>"style="float: left;background: white;border-radius: 3px;">
+-                        <label class="otkaz" id="otkaz<?echo $resschetall['rand'];?>">Отказать</label>
++                        <!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BUTTON
++<label class="otkaz" id="otkaz<?echo $resschetall['rand'];?>">Отказать</label>
++                        TEMP_LEGACY_20261029 END REFUSAL_BUTTON -->
+                     </div>
+                     <div id="prich<?echo $resschetall['rand'];?>"style="display: none;position: relative;float: left;right: 480px;background: white;border-radius: 3px;bottom: 200px;padding-left: 10px;height: 750px;overflow-y: scroll;">
+                         <?php $rotkaz = mysql_query("SELECT * FROM `prichotk`");
+@@ -7573,7 +7623,9 @@
+             <div class="modal-windowm<?echo $resschetall['rand'];?>"style=" position: fixed;top:50%;left:95%;margin:-100px 0 0 -200px;width:450px;height:auto;border-radius:10px;display:none;background:transparent; z-index:9999;">
+                 <form class="contact_form" method="POST">
+                     <div id="kalm<?echo $resschetall['rand'];?>"style="float: left;background: white;border-radius: 3px;">
+-                        <label class="otkaz" id="otkaz<?echo $resschetall['rand'];?>">Отказать</label>
++                        <!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BUTTON
++<label class="otkaz" id="otkaz<?echo $resschetall['rand'];?>">Отказать</label>
++                        TEMP_LEGACY_20261029 END REFUSAL_BUTTON -->
+                     </div>
+                     <div id="prich<?echo $resschetall['rand'];?>"style="display: none;position: relative;float: left;right: 480px;background: white;border-radius: 3px;bottom: 200px;padding-left: 10px;height: 750px;overflow-y: scroll;">
+                         <?php $rotkaz = mysql_query("SELECT * FROM `prichotk`");
+@@ -7808,7 +7860,9 @@
+     <div class="modal-windowm<?echo $resschetall['rand'];?>"style=" position: fixed;top:50%;left:95%;margin:-100px 0 0 -200px;width:450px;height:auto;border-radius:10px;display:none;background:transparent; z-index:9999;">
+         <form class="contact_form" method="POST">
+             <div id="kalm<?echo $resschetall['rand'];?>"style="float: left;background: white;border-radius: 3px;">
+-                <label class="otkaz" id="otkaz<?echo $resschetall['rand'];?>">Отказать</label>
++                <!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BUTTON
++<label class="otkaz" id="otkaz<?echo $resschetall['rand'];?>">Отказать</label>
++                TEMP_LEGACY_20261029 END REFUSAL_BUTTON -->
+             </div>
+             <div id="prich<?echo $resschetall['rand'];?>"style="display: none;position: relative;float: left;right: 480px;background: white;border-radius: 3px;bottom: 200px;padding-left: 10px;height: 750px;overflow-y: scroll;">
+                 <?php $rotkaz = mysql_query("SELECT * FROM `prichotk`");
+@@ -8043,7 +8097,9 @@
+             <div class="modal-windowm<?echo $resschetall['rand'];?>"style=" position: fixed;top:50%;left:95%;margin:-100px 0 0 -200px;width:450px;height:auto;border-radius:10px;display:none;background:transparent; z-index:9999;">
+                 <form class="contact_form" method="POST">
+                     <div id="kalm<?echo $resschetall['rand'];?>"style="float: left;background: white;border-radius: 3px;">
+-                        <label class="otkaz" id="otkaz<?echo $resschetall['rand'];?>">Отказать</label>
++                        <!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BUTTON
++<label class="otkaz" id="otkaz<?echo $resschetall['rand'];?>">Отказать</label>
++                        TEMP_LEGACY_20261029 END REFUSAL_BUTTON -->
+                     </div>
+                     <div id="prich<?echo $resschetall['rand'];?>"style="display: none;position: relative;float: left;right: 480px;background: white;border-radius: 3px;bottom: 200px;padding-left: 10px;height: 750px;overflow-y: scroll;">
+                         <?php $rotkaz = mysql_query("SELECT * FROM `prichotk`");
+@@ -12337,7 +12393,9 @@
+             <div class="modal-windowm<?echo $resschetall['rand'];?>"style=" position: fixed;top:50%;left:95%;margin:-100px 0 0 -200px;width:450px;height:auto;border-radius:10px;display:none;background:transparent; z-index:9999;">
+                 <form class="contact_form" method="POST">
+                     <div id="kalm<?echo $resschetall['rand'];?>"style="float: left;background: white;border-radius: 3px;">
+-                        <label class="otkaz" id="otkaz<?echo $resschetall['rand'];?>">Отказать</label>
++                        <!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BUTTON
++<label class="otkaz" id="otkaz<?echo $resschetall['rand'];?>">Отказать</label>
++                        TEMP_LEGACY_20261029 END REFUSAL_BUTTON -->
+                     </div>
+                     <div id="prich<?echo $resschetall['rand'];?>"style="display: none;position: relative;float: left;right: 480px;background: white;border-radius: 3px;bottom: 200px;padding-left: 10px;height: 750px;overflow-y: scroll;">
+                         <?php $rotkaz = mysql_query("SELECT * FROM `prichotk`");
+@@ -12756,7 +12814,9 @@
+         <div class="modal-windowm<?echo $resschetall['rand'];?>"style=" position: fixed;top:50%;left:95%;margin:-100px 0 0 -200px;width:450px;height:auto;border-radius:10px;display:none;background:transparent; z-index:9999;">
+             <form class="contact_form" method="POST">
+                 <div id="kalm<?echo $resschetall['rand'];?>"style="float: left;background: white;border-radius: 3px;">
+-                    <label class="otkaz" id="otkaz<?echo $resschetall['rand'];?>">Отказать</label>
++                    <!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BUTTON
++<label class="otkaz" id="otkaz<?echo $resschetall['rand'];?>">Отказать</label>
++                    TEMP_LEGACY_20261029 END REFUSAL_BUTTON -->
+                 </div>
+                 <div id="prich<?echo $resschetall['rand'];?>"style="display: none;position: relative;float: left;right: 480px;background: white;border-radius: 3px;bottom: 200px;padding-left: 10px;height: 750px;overflow-y: scroll;">
+                     <?php $rotkaz = mysql_query("SELECT * FROM `prichotk`");
+@@ -12980,7 +13040,9 @@
+             <div class="modal-windowm<?echo $resschetall['rand'];?>"style=" position: fixed;top:50%;left:95%;margin:-100px 0 0 -200px;width:450px;height:auto;border-radius:10px;display:none;background:transparent; z-index:9999;">
+                 <form class="contact_form" method="POST">
+                     <div id="kalm<?echo $resschetall['rand'];?>"style="float: left;background: white;border-radius: 3px;">
+-                        <label class="otkaz" id="otkaz<?echo $resschetall['rand'];?>">Отказать</label>
++                        <!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BUTTON
++<label class="otkaz" id="otkaz<?echo $resschetall['rand'];?>">Отказать</label>
++                        TEMP_LEGACY_20261029 END REFUSAL_BUTTON -->
+                     </div>
+                     <div id="prich<?echo $resschetall['rand'];?>"style="display: none;position: relative;float: left;right: 480px;background: white;border-radius: 3px;bottom: 200px;padding-left: 10px;height: 750px;overflow-y: scroll;">
+                         <?php $rotkaz = mysql_query("SELECT * FROM `prichotk`");
+@@ -13206,7 +13268,9 @@
+         <div class="modal-windowm<?echo $resschetall['rand'];?>"style=" position: fixed;top:50%;left:95%;margin:-100px 0 0 -200px;width:450px;height:auto;border-radius:10px;display:none;background:transparent; z-index:9999;">
+             <form class="contact_form" method="POST">
+                 <div id="kalm<?echo $resschetall['rand'];?>"style="float: left;background: white;border-radius: 3px;">
+-                    <label class="otkaz" id="otkaz<?echo $resschetall['rand'];?>">Отказать</label>
++                    <!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BUTTON
++<label class="otkaz" id="otkaz<?echo $resschetall['rand'];?>">Отказать</label>
++                    TEMP_LEGACY_20261029 END REFUSAL_BUTTON -->
+                 </div>
+                 <div id="prich<?echo $resschetall['rand'];?>"style="display: none;position: relative;float: left;right: 480px;background: white;border-radius: 3px;bottom: 200px;padding-left: 10px;height: 750px;overflow-y: scroll;">
+                     <?php $rotkaz = mysql_query("SELECT * FROM `prichotk`");
+--- a/toha.php
++++ b/toha.php
+@@ -214,10 +214,14 @@
+ 		$result47 = mysql_query($q47);
+ 		$person47 = mysql_fetch_array($result47);
+ 		if($person47['otk'] == 0){
+-			$Qdelete = mysql_query("UPDATE `schet` SET `otk` =  '1', `sortir` =  '".$var."' WHERE rand IN (".$impid.")") or die ("error in delete");
+-			if(isset($Qdelete)){
+-				echo "Успешно  ".$person."";
+-			}
++		    // TEMP_LEGACY_20261029 BEGIN BULK_OTK_CREATE
++		    // Создание отказа отключено; возврат статуса 0 ниже сохранён.
++		    // 			$Qdelete = mysql_query("UPDATE `schet` SET `otk` =  '1', `sortir` =  '".$var."' WHERE rand IN (".$impid.")") or die ("error in delete");
++		    // 			if(isset($Qdelete)){
++		    // 				echo "Успешно  ".$person."";
++		    // 			}
++		    // TEMP_LEGACY_20261029 END BULK_OTK_CREATE
++		    echo 'Создание отказов временно отключено.';
+ 		}if($person47['otk'] == 1){
+ 			$Qdelete = mysql_query("UPDATE `schet` SET `otk` =  '0' WHERE rand IN (".$impid.")") or die ("error in delete");
+ 			if(isset($Qdelete)){
+@@ -235,10 +239,14 @@
+ 		$result47 = mysql_query($q47);
+ 		$person47 = mysql_fetch_array($result47);
+ 		if($person47['cher'] == 0){
+-			$Qdelete = mysql_query("UPDATE `schet` SET `cher` =  '1', `sortir` =  '".$var."' WHERE rand IN (".$impid.")") or die ("error in delete");
+-			if(isset($Qdelete)){
+-				echo "Успешно  ".$person."";
+-			}
++		    // TEMP_LEGACY_20261029 BEGIN BULK_CHER_CREATE
++		    // Создание отказа отключено; возврат статуса 0 ниже сохранён.
++		    // 			$Qdelete = mysql_query("UPDATE `schet` SET `cher` =  '1', `sortir` =  '".$var."' WHERE rand IN (".$impid.")") or die ("error in delete");
++		    // 			if(isset($Qdelete)){
++		    // 				echo "Успешно  ".$person."";
++		    // 			}
++		    // TEMP_LEGACY_20261029 END BULK_CHER_CREATE
++		    echo 'Создание отказов временно отключено.';
+ 		}if($person47['cher'] == 1){
+ 			$Qdelete = mysql_query("UPDATE `schet` SET `cher` =  '0' WHERE rand IN (".$impid.")") or die ("error in delete");
+ 			if(isset($Qdelete)){
+--- a/tohaakt.php
++++ b/tohaakt.php
+@@ -459,7 +459,10 @@
+ $idkli = "SELECT * FROM ogrn WHERE ogrn =".$row['ogrn'];
+ $ridkli = mysql_query($idkli);
+ $pidkli = mysql_fetch_array($ridkli);
+-$Qdelete = mysql_query("UPDATE `schet` SET `idkli` =  '".$pidkli['id']."' WHERE ogrn =".$row['ogrn']);
++// TEMP_LEGACY_20261029 BEGIN AUTO_CLIENT_REASSIGN
++// Временно отключено: просмотр страницы не должен менять клиента счёта.
++// $Qdelete = mysql_query("UPDATE `schet` SET `idkli` =  '".$pidkli['id']."' WHERE ogrn =".$row['ogrn']);
++// TEMP_LEGACY_20261029 END AUTO_CLIENT_REASSIGN
+ 
+ 
+ if($row['url'] == "0"){
+--- a/tohha.php
++++ b/tohha.php
+@@ -263,10 +263,14 @@
+ 		$result47 = mysql_query($q47);
+ 		$person47 = mysql_fetch_array($result47);
+ 		if($person47['otk'] == 0){
+-			$Qdelete = mysql_query("UPDATE `schet` SET `otk` =  '1' WHERE rand IN (".$impid.")") or die ("error in delete");
+-			if(isset($Qdelete)){
+-				echo "Успешно  ".$person."";
+-			}
++		    // TEMP_LEGACY_20261029 BEGIN BULK_OTK_CREATE
++		    // Создание отказа отключено; возврат статуса 0 ниже сохранён.
++		    // 			$Qdelete = mysql_query("UPDATE `schet` SET `otk` =  '1' WHERE rand IN (".$impid.")") or die ("error in delete");
++		    // 			if(isset($Qdelete)){
++		    // 				echo "Успешно  ".$person."";
++		    // 			}
++		    // TEMP_LEGACY_20261029 END BULK_OTK_CREATE
++		    echo 'Создание отказов временно отключено.';
+ 		}if($person47['otk'] == 1){
+ 			$Qdelete = mysql_query("UPDATE `schet` SET `otk` =  '0' WHERE rand IN (".$impid.")") or die ("error in delete");
+ 			if(isset($Qdelete)){
+@@ -342,7 +346,9 @@
+ <input class="btn btn-success btn-xs" type="submit" name="akt" value="Акт отгружен" style="margin-bottom: 5px;" /> - 
+ ';}
+ ?>
++<!-- TEMP_LEGACY_20261029 BEGIN REFUSAL_BULK_BUTTON
+ <input class="btn btn-gavno btn-xs" type="submit" name="otk" value="Отказались" style="margin-bottom: 5px;" /> - 
++TEMP_LEGACY_20261029 END REFUSAL_BULK_BUTTON -->
+ <input class="btn btn-default btn-xs" type="reset" id="deleteol" value="Убрать отмеченые" style="margin-bottom: 5px;" /> - 
+ <?php if($userdata['otvetstven']==1){echo '<input onclick=\'return confirm("Для удаления счета нажмите OK!");\' class="btn btn-primary btn-xs" type="submit" name="deletemarked" value="Удалить" style="margin-bottom: 5px;" />';}?>
+ <p id="countdisplay" style="color:#fff; display:none;">Выбранно: <b style="font-size:15px;" id="count"></b></p>

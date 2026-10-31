@@ -19,29 +19,15 @@ ensure_runtime_dirs() {
 }
 
 restore_db() {
-  "${compose[@]}" up -d --build db
+  "${compose[@]}" stop voovi-web svoovi-api svoovi-api-tasks analitic
+  "${compose[@]}" up -d --build --wait --wait-timeout 180 db
   "${compose[@]}" run --rm db-restore
 }
 
-up_with_restore() {
-  ensure_runtime_dirs
-  restore_db
-  "${compose[@]}" up -d --build --remove-orphans --no-deps \
-    voovi-web \
-    svoovi-api \
-    svoovi-api-tasks \
-    analitic \
-    phpmyadmin
-  "${compose[@]}" up -d --build --remove-orphans --no-deps nginx
-}
-
-case "${1:-up}" in
-  up)
-    up_with_restore
-    ;;
-  start)
+case "${1:-start}" in
+  start|up)
     ensure_runtime_dirs
-    "${compose[@]}" up -d --build db
+    "${compose[@]}" up -d --build --wait --wait-timeout 180 db
     "${compose[@]}" up -d --build --remove-orphans --no-deps \
       voovi-web \
       svoovi-api \
@@ -66,9 +52,9 @@ case "${1:-up}" in
   help|-h|--help)
     cat <<'HELP'
 Usage:
-  ./dev.sh             build, restore voovi.sql, and start the full dev stack
-  ./dev.sh up          same as above; database is dropped and restored
-  ./dev.sh start       start stack without restoring the database
+  ./dev.sh             start without restoring the database
+  ./dev.sh up          same as start
+  ./dev.sh start       start the stack with the existing database
   ./dev.sh restore-db  drop and restore only the local database from voovi.sql
   ./dev.sh logs [svc]  follow compose logs
   ./dev.sh stop        stop containers

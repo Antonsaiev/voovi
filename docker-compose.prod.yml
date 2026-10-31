@@ -15,6 +15,12 @@ services:
       - voovi_log:/var/www/html/log
       - voovi_upload:/var/www/html/upload
       - voovi_files:/var/www/html/files
+      - type: bind
+        source: /root/docker/voovi/voovi.ru/files/agentkkt
+        target: /var/www/html/files/agentkkt
+        read_only: true
+        bind:
+          create_host_path: false
       - voovi_voicecatalog:/var/www/html/voicecatalog
       - voovi_img:/var/www/html/img
       - voovi_vipiska:/var/www/html/vipiska
@@ -32,11 +38,14 @@ services:
     container_name: voovi_prod_svoovi_api
     hostname: apisvoovi
     restart: unless-stopped
-    command: python manage.py runserver 0.0.0.0:8000
+    command: sh -c 'python manage.py collectstatic --noinput && exec gunicorn SvooviAPI.wsgi:application --bind 0.0.0.0:8000 --workers 2 --threads 4 --timeout 120 --access-logfile - --error-logfile -'
     env_file:
       - ./configs/env/prod.env
     ports:
       - "127.0.0.1:18001:8000"
+    volumes:
+      - voovi_kontur_automation:/usr/src/app/var/kontur_automation
+      - voovi_payroll:/usr/src/app/var/payroll
     networks:
       voovi:
         aliases:
@@ -55,6 +64,11 @@ services:
         condition: service_started
     env_file:
       - ./configs/env/prod.env
+    environment:
+      KONTUR_AUTOMATION_VOOVI_URL: http://svoovi-api:8000
+    volumes:
+      - voovi_kontur_automation:/usr/src/app/var/kontur_automation
+      - voovi_payroll:/usr/src/app/var/payroll
     networks:
       - voovi
 
@@ -65,7 +79,7 @@ services:
     container_name: voovi_prod_analitic
     hostname: analitic
     restart: unless-stopped
-    command: python manage.py runserver 0.0.0.0:7000 --insecure
+    command: sh -c 'python manage.py collectstatic --noinput && exec gunicorn ai_auto_voovi.wsgi:application --bind 0.0.0.0:7000 --workers 2 --threads 4 --timeout 120 --access-logfile - --error-logfile -'
     depends_on:
       svoovi-api:
         condition: service_started
@@ -83,7 +97,8 @@ networks:
     name: voovi
 
 volumes:
-  voovi_mysql:
+  voovi_kontur_automation:
+  voovi_payroll:
   voovi_doc:
   voovi_log:
   voovi_upload:

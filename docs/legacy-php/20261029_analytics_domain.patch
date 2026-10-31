@@ -1,0 +1,90 @@
+--- a/docpage.php
++++ b/docpage.php
+@@ -290,11 +290,11 @@
+ 
+ // формируем новые и старые URL
+ $billId      = $row['god'] . $row['kto'] . $row['otdel'] . $row['kolichschet'];
+-$newPdfUrl   = 'https://s.voovi.ru/different/dwdocs/' . $billId . '?type=bill_pdf';
+-$newPdfSigUrl   = 'https://s.voovi.ru/different/dwdocs/' . $billId . '?type=bill_pdf_signature';
++$newPdfUrl   = 'https://analitic.voovi.ru/different/dwdocs/' . $billId . '?type=bill_pdf';
++$newPdfSigUrl   = 'https://analitic.voovi.ru/different/dwdocs/' . $billId . '?type=bill_pdf_signature';
+ $oldPrintUrl = '/schet.php?id=' . $row['rand'] . '&p=1&kli=' . urlencode($_GET['kli']);
+ $oldViewUrl  = '/schet.php?id=' . $row['rand'] . '&p=0&kli=' . urlencode($_GET['kli']);
+-$syncUrl = 'https://s.voovi.ru/different/evrika-bills-synchronization/' . $ns . '/';
++$syncUrl = 'https://analitic.voovi.ru/different/evrika-bills-synchronization/' . $ns . '/';
+ echo '<td>';
+ echo '<a href="' . htmlspecialchars($syncUrl, ENT_QUOTES, 'UTF-8') . '" 
+         target="_blank"
+@@ -324,7 +324,7 @@
+ 
+ echo '<td>';
+ //echo '<a href="doc/'.$_GET['kli'].'/'.$row['rand'].'/schet.doc"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></a>';
+-$url = 'https://s.voovi.ru/different/dwdocs/' . $billId . '?type=bill_docx';
++$url = 'https://analitic.voovi.ru/different/dwdocs/' . $billId . '?type=bill_docx';
+ echo '<a href="' . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . '" target="_blank" title="Скачать docx"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></a>';
+ 
+ echo "&nbsp;&nbsp;<a target='_blank' href='".$row['url']."'><span class='glyphicon glyphicon-share' aria-hidden='true'></span></a>";
+@@ -1199,9 +1199,9 @@
+                // billId как в счёте
+                $billId = $row['god'].$row['kto'].$row['otdel'].$row['kolichschet'];
+ 
+-               $updPdfUrl     = 'https://s.voovi.ru/different/dwdocs/' . $billId . '?type=upd_pdf';
+-               $updPdfSigUrl  = 'https://s.voovi.ru/different/dwdocs/' . $billId . '?type=upd_pdf_signature';
+-               $updDocxUrl    = 'https://s.voovi.ru/different/dwdocs/' . $billId . '?type=upd_docx';
++               $updPdfUrl     = 'https://analitic.voovi.ru/different/dwdocs/' . $billId . '?type=upd_pdf';
++               $updPdfSigUrl  = 'https://analitic.voovi.ru/different/dwdocs/' . $billId . '?type=upd_pdf_signature';
++               $updDocxUrl    = 'https://analitic.voovi.ru/different/dwdocs/' . $billId . '?type=upd_docx';
+ 
+                // Печать (pdf без подписи или с подписью — как тебе удобнее)
+                echo '<td>';
+--- a/header.php
++++ b/header.php
+@@ -1185,7 +1185,7 @@
+         <div id="load_tweets"  class="collapse navbar-collapse">
+             <ul class="nav navbar-nav">
+                 <li class="asdewq"><a href="/check.php"><span class="glyphicon glyphicon-home"></span></a></li>
+-                <li class="asdewq" title="Финансы"><a href="https://s.voovi.ru"><span class="glyphicon glyphicon-bitcoin"></span></a></li>
++                <li class="asdewq" title="Финансы"><a href="https://analitic.voovi.ru"><span class="glyphicon glyphicon-bitcoin"></span></a></li>
+                 <li><?php if($userdata['tip'] < 87){ include $url_sl.'header/headercall.php';} ?></li>
+                 <li><?php if($userdata['tip'] < 87){ include $url_sl.'header/headerneop.php';} ?></li>
+                 <!--<li><?php/* if($userdata['tip'] < 87){ include $url_sl.'header/headerotc.php';}*/ ?></li>!-->
+--- a/komnete.php
++++ b/komnete.php
+@@ -190,7 +190,7 @@
+ ">Контур: <?php echo $schet['nomerschetks']; ?>  | Счет: <?php if($schet['oferta'] == 1){echo  '-ОФЕРТА';}
+             if($schet['nomerschet'] != 'В КС'){
+ //                echo 'S_', $schet['god'],$schet['kto'],$schet['otdel'],$schet['kolichschet'];
+-                echo 'S_', '<a href="https://s.voovi.ru/different/diadoc?ns=' . $schet['god'],$schet['kto'],$schet['otdel'],$schet['kolichschet'] . '"target="_blank">' . $schet['god'],$schet['kto'],$schet['otdel'],$schet['kolichschet'] . '</a><br>';
++                echo 'S_', '<a href="https://analitic.voovi.ru/different/diadoc?ns=' . $schet['god'],$schet['kto'],$schet['otdel'],$schet['kolichschet'] . '"target="_blank">' . $schet['god'],$schet['kto'],$schet['otdel'],$schet['kolichschet'] . '</a><br>';
+                 if($row['ns']=='0'){
+                     mysql_query("UPDATE schet SET ns='".$schet['god'].$schet['kto'].$schet['otdel'].$schet['kolichschet']."' WHERE rand =".$_GET['rand']);
+                 }
+--- a/inctoha.php
++++ b/inctoha.php
+@@ -39,7 +39,7 @@
+ 
+     if($row['nomerschet'] != 'В КС'){
+         //echo '<span class="glyphicon glyphicon-bookmark" aria-hidden="true"  style="display:initial;" ></span>',$row['god'],$row['kto'],$row['otdel'],$row['kolichschet'].'<br>';
+-        echo '<a style="font-size: 14px;" href="https://s.voovi.ru/different/diadoc?ns=' . $row['god'],$row['kto'],$row['otdel'],$row['kolichschet'] . '"target="_blank">' . $row['god'],$row['kto'],$row['otdel'],$row['kolichschet'] . '</a><br>';
++        echo '<a style="font-size: 14px;" href="https://analitic.voovi.ru/different/diadoc?ns=' . $row['god'],$row['kto'],$row['otdel'],$row['kolichschet'] . '"target="_blank">' . $row['god'],$row['kto'],$row['otdel'],$row['kolichschet'] . '</a><br>';
+         if($row['ns']=='0'){
+             mysql_query("UPDATE schet SET ns='".$row['god'].$row['kto'].$row['otdel'].$row['kolichschet']."' WHERE rand =".$row['rand']);
+         }
+@@ -83,7 +83,7 @@
+         $ns_for_link = $row['god'].$row['kto'].$row['otdel'].$row['kolichschet'];
+     }
+ 
+-    echo '<a style="font-size: 14px;" href="https://s.voovi.ru/payments/SearchBill?n_schet=' . $ns_for_link . '">' . $row['name'] . '</a>';
++    echo '<a style="font-size: 14px;" href="https://analitic.voovi.ru/payments/SearchBill?n_schet=' . $ns_for_link . '">' . $row['name'] . '</a>';
+ 
+ 
+ 
+@@ -123,7 +123,7 @@
+     $personrpod = mysql_fetch_array($resultrpod);
+ 
+ //echo $personrpod['name'];
+-    echo '<a style="font-size: 14px;" href="https://s.voovi.ru/payments/EditTarifSchet?n_schet=' . $ns_for_link . '">' . $personrpod['name'] . '</a>';
++    echo '<a style="font-size: 14px;" href="https://analitic.voovi.ru/payments/EditTarifSchet?n_schet=' . $ns_for_link . '">' . $personrpod['name'] . '</a>';
+     if($userdata['users_id'] == 1){
+         echo '/'.$row['produkt'].'/'.$udospersonrpod['parent'];
+     }

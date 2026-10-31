@@ -26,7 +26,7 @@ services:
 
   db-restore:
     image: mariadb:10.2
-    container_name: voovi_db_restore
+    profiles: [tools]
     depends_on:
       db:
         condition: service_healthy
@@ -57,8 +57,8 @@ services:
     container_name: voovi_web
     restart: unless-stopped
     depends_on:
-      db-restore:
-        condition: service_completed_successfully
+      db:
+        condition: service_healthy
     env_file:
       - ./configs/env/local.env
     ports:
@@ -77,8 +77,8 @@ services:
     container_name: voovi_phpmyadmin
     restart: unless-stopped
     depends_on:
-      db-restore:
-        condition: service_completed_successfully
+      db:
+        condition: service_healthy
     env_file:
       - ./configs/env/local.env
     ports:
@@ -113,8 +113,8 @@ services:
     restart: unless-stopped
     command: python manage.py runserver 0.0.0.0:8000
     depends_on:
-      db-restore:
-        condition: service_completed_successfully
+      db:
+        condition: service_healthy
     env_file:
       - ./configs/env/local.env
     ports:
@@ -135,12 +135,14 @@ services:
     restart: unless-stopped
     command: python manage.py process_tasks
     depends_on:
-      db-restore:
-        condition: service_completed_successfully
+      db:
+        condition: service_healthy
       svoovi-api:
         condition: service_started
     env_file:
       - ./configs/env/local.env
+    environment:
+      KONTUR_AUTOMATION_VOOVI_URL: http://svoovi-api:8000
     volumes:
       - ./s.voovi.ru-api:/usr/src/app
     networks:
@@ -155,8 +157,8 @@ services:
     restart: unless-stopped
     command: python manage.py runserver 0.0.0.0:7000 --insecure
     depends_on:
-      db-restore:
-        condition: service_completed_successfully
+      db:
+        condition: service_healthy
       svoovi-api:
         condition: service_started
     env_file:

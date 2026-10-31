@@ -30,3 +30,6 @@ build/
 /voovi.ru/
 /s.voovi.ru-api/
 /analitic/
+
+# Локальные отчёты о несостыковках данных
+/database/audits/
