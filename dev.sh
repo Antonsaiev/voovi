@@ -15,7 +15,10 @@ ensure_runtime_dirs() {
     voovi.ru/img \
     voovi.ru/vipiska \
     voovi.ru/scheta \
-    voovi.ru/mail/database
+    voovi.ru/mail/database \
+    var/bank/Downloads \
+    var/bank/file_for_process \
+    analitic/uploads/payments
 }
 
 restore_db() {

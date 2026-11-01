@@ -17,6 +17,7 @@
 # Docker / runtime state
 docker-data/
 logs/
+/var/bank/
 *.log
 
 # Python / Node local artifacts

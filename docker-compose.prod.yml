@@ -46,6 +46,7 @@ services:
     volumes:
       - voovi_kontur_automation:/usr/src/app/var/kontur_automation
       - voovi_payroll:/usr/src/app/var/payroll
+      - voovi_banking:/usr/src/app/var/banking/state
     networks:
       voovi:
         aliases:
@@ -69,6 +70,27 @@ services:
     volumes:
       - voovi_kontur_automation:/usr/src/app/var/kontur_automation
       - voovi_payroll:/usr/src/app/var/payroll
+      - type: bind
+        source: /root/selenium-compose/files/Downloads
+        target: /usr/src/app/var/banking/incoming
+        bind:
+          create_host_path: true
+      - type: bind
+        source: /root/selenium-compose/files/file_for_process
+        target: /usr/src/app/var/banking/prepared
+        bind:
+          create_host_path: true
+      - type: bind
+        source: ./analitic/uploads/payments
+        target: /usr/src/app/var/banking/uploads
+        bind:
+          create_host_path: true
+      - type: bind
+        source: /root/analitic/uploads/payments
+        target: /usr/src/app/var/banking/legacy_uploads
+        bind:
+          create_host_path: false
+      - voovi_banking:/usr/src/app/var/banking/state
     networks:
       - voovi
 
@@ -97,6 +119,7 @@ networks:
     name: voovi
 
 volumes:
+  voovi_banking:
   voovi_kontur_automation:
   voovi_payroll:
   voovi_doc:

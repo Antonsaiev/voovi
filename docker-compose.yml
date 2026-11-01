@@ -121,6 +121,7 @@ services:
       - "${SVOOVI_API_PORT:-7005}:8000"
     volumes:
       - ./s.voovi.ru-api:/usr/src/app
+      - voovi_banking:/usr/src/app/var/banking/state
     networks:
       voovi:
         aliases:
@@ -145,6 +146,10 @@ services:
       KONTUR_AUTOMATION_VOOVI_URL: http://svoovi-api:8000
     volumes:
       - ./s.voovi.ru-api:/usr/src/app
+      - ./var/bank/Downloads:/usr/src/app/var/banking/incoming
+      - ./var/bank/file_for_process:/usr/src/app/var/banking/prepared
+      - ./analitic/uploads/payments:/usr/src/app/var/banking/uploads
+      - voovi_banking:/usr/src/app/var/banking/state
     networks:
       - voovi
 
@@ -176,3 +181,4 @@ networks:
 
 volumes:
   voovi_mysql:
+  voovi_banking:
