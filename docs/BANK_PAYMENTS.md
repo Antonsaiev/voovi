@@ -331,7 +331,11 @@ docker compose --env-file configs/env/local.env exec svoovi-api-tasks python man
 docker compose --env-file configs/env/local.env exec svoovi-api-tasks python manage.py bank_statements --execute
 ```
 
-Production-конфигурация подготовлена с `BANK_AUTOMATION_ENABLED=0`.
+В production включено `BANK_AUTOMATION_ENABLED=1` после отключения трёх
+заменяемых cron 1 ноября 2026: копирования ручных загрузок, конвертации и разнесения.
+Вход в банк, скачивание и получение файлов из Docker оставлены на сервере.
+Форма загрузки прежней аналитики поддерживается через `BANK_LEGACY_UPLOADS_DIR`;
+исходные файлы из этой папки не удаляются.
 При отключённом банке отсутствующие входные каталоги не блокируют общий worker.
 При включённом банке `deploy.sh` проверяет банковские источники **до** сборки и
 замены контейнеров; папка ручных загрузок создаётся заранее.
