@@ -1,7 +1,14 @@
+x-logging: &bounded-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "5"
+
 services:
   db:
     image: mariadb:10.2
     container_name: voovi_db
+    logging: *bounded-logging
     restart: unless-stopped
     env_file:
       - ./configs/env/local.env
@@ -55,6 +62,7 @@ services:
       dockerfile: Dockerfile
     platform: linux/amd64
     container_name: voovi_web
+    logging: *bounded-logging
     restart: unless-stopped
     depends_on:
       db:
@@ -75,6 +83,7 @@ services:
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
     container_name: voovi_phpmyadmin
+    logging: *bounded-logging
     restart: unless-stopped
     depends_on:
       db:
@@ -89,6 +98,7 @@ services:
   nginx:
     image: nginx:1.27-alpine
     container_name: voovi_nginx
+    logging: *bounded-logging
     restart: unless-stopped
     depends_on:
       voovi-web:
@@ -109,6 +119,7 @@ services:
       context: ./s.voovi.ru-api
       dockerfile: Dockerfile
     container_name: apisvoovi
+    logging: *bounded-logging
     hostname: apisvoovi
     restart: unless-stopped
     command: python manage.py runserver 0.0.0.0:8000
@@ -132,6 +143,7 @@ services:
       context: ./s.voovi.ru-api
       dockerfile: Dockerfile
     container_name: apisvoovi_tasks
+    logging: *bounded-logging
     hostname: apisvoovi_tasks
     restart: unless-stopped
     command: python manage.py process_tasks
@@ -158,6 +170,7 @@ services:
       context: ./analitic
       dockerfile: Dockerfile
     container_name: analitic
+    logging: *bounded-logging
     hostname: analitic
     restart: unless-stopped
     command: python manage.py runserver 0.0.0.0:7000 --insecure

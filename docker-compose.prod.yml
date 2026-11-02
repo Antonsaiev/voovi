@@ -1,3 +1,9 @@
+x-logging: &bounded-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "5"
+
 services:
   voovi-web:
     build:
@@ -5,6 +11,7 @@ services:
       dockerfile: Dockerfile
     platform: linux/amd64
     container_name: voovi_web
+    logging: *bounded-logging
     restart: unless-stopped
     env_file:
       - ./configs/env/prod.env
@@ -36,6 +43,7 @@ services:
       context: ./s.voovi.ru-api
       dockerfile: Dockerfile
     container_name: voovi_prod_svoovi_api
+    logging: *bounded-logging
     hostname: apisvoovi
     restart: unless-stopped
     command: sh -c 'python manage.py collectstatic --noinput && exec gunicorn SvooviAPI.wsgi:application --bind 0.0.0.0:8000 --workers 2 --threads 4 --timeout 120 --access-logfile - --error-logfile -'
@@ -57,6 +65,7 @@ services:
       context: ./s.voovi.ru-api
       dockerfile: Dockerfile
     container_name: voovi_prod_svoovi_api_tasks
+    logging: *bounded-logging
     hostname: apisvoovi_tasks
     restart: unless-stopped
     command: python manage.py process_tasks
@@ -99,6 +108,7 @@ services:
       context: ./analitic
       dockerfile: Dockerfile
     container_name: voovi_prod_analitic
+    logging: *bounded-logging
     hostname: analitic
     restart: unless-stopped
     command: sh -c 'python manage.py collectstatic --noinput && exec gunicorn ai_auto_voovi.wsgi:application --bind 0.0.0.0:7000 --workers 2 --threads 4 --timeout 120 --access-logfile - --error-logfile -'
