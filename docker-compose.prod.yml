@@ -55,6 +55,7 @@ services:
       - voovi_kontur_automation:/usr/src/app/var/kontur_automation
       - voovi_payroll:/usr/src/app/var/payroll
       - voovi_banking:/usr/src/app/var/banking/state
+      - voovi_reminders:/usr/src/app/var/reminders
     networks:
       voovi:
         aliases:
@@ -100,6 +101,7 @@ services:
         bind:
           create_host_path: false
       - voovi_banking:/usr/src/app/var/banking/state
+      - voovi_reminders:/usr/src/app/var/reminders
     networks:
       - voovi
 
@@ -141,3 +143,4 @@ volumes:
   voovi_vipiska:
   voovi_scheta:
   voovi_mail_database:
+  voovi_reminders:
