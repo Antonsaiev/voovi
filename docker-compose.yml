@@ -156,8 +156,10 @@ services:
     env_file:
       - ./configs/env/local.env
     environment:
+      HOROSCOPE_ENABLED: "1"
       KONTUR_AUTOMATION_VOOVI_URL: http://svoovi-api:8000
     volumes:
+      - voovi_horoscope:/usr/src/app/var/horoscope
       - ./s.voovi.ru-api:/usr/src/app
       - ./var/bank/Downloads:/usr/src/app/var/banking/incoming
       - ./var/bank/file_for_process:/usr/src/app/var/banking/prepared
@@ -187,6 +189,7 @@ services:
       - "${ANALITIC_PORT:-7000}:7000"
     volumes:
       - ./analitic:/code
+      - voovi_horoscope:/code/var/horoscope:ro
     networks:
       - voovi
 
@@ -198,3 +201,5 @@ volumes:
   voovi_mysql:
   voovi_banking:
   voovi_reminders:
+  voovi_horoscope:
+    name: voovi_horoscope

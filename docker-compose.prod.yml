@@ -76,8 +76,10 @@ services:
     env_file:
       - ./configs/env/prod.env
     environment:
+      HOROSCOPE_ENABLED: "1"
       KONTUR_AUTOMATION_VOOVI_URL: http://svoovi-api:8000
     volumes:
+      - voovi_horoscope:/usr/src/app/var/horoscope
       - voovi_kontur_automation:/usr/src/app/var/kontur_automation
       - voovi_payroll:/usr/src/app/var/payroll
       - type: bind
@@ -123,6 +125,7 @@ services:
       - "127.0.0.1:18002:7000"
     volumes:
       - ./analitic/uploads:/code/uploads
+      - voovi_horoscope:/code/var/horoscope:ro
     networks:
       - voovi
 
@@ -144,3 +147,5 @@ volumes:
   voovi_scheta:
   voovi_mail_database:
   voovi_reminders:
+  voovi_horoscope:
+    name: voovi_horoscope
