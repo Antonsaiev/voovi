@@ -75,6 +75,7 @@ services:
       - ./voovi.ru:/var/www/html
       - ./voovi.ru/docker/conf.php:/var/www/html/conf.php:ro
       - ./voovi.ru/docker/.htaccess:/var/www/html/.htaccess:ro
+      - ./voovi.ru/docker/debug-mail.ini:/usr/local/etc/php/conf.d/zz-debug-mail.ini:ro
     networks:
       voovi:
         aliases:
