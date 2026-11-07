@@ -1,0 +1,8 @@
+# Root context is used only by the isolated bank downloader.
+**
+!banking_downloader/
+!banking_downloader/**
+!s.voovi.ru-api/
+!s.voovi.ru-api/basic/
+!s.voovi.ru-api/basic/banking/
+!s.voovi.ru-api/basic/banking/parser.py

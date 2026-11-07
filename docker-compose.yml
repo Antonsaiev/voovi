@@ -162,7 +162,7 @@ services:
     volumes:
       - voovi_horoscope:/usr/src/app/var/horoscope
       - ./s.voovi.ru-api:/usr/src/app
-      - ./var/bank/Downloads:/usr/src/app/var/banking/incoming
+      - ./var/bank/downloads/ready:/usr/src/app/var/banking/incoming
       - ./var/bank/file_for_process:/usr/src/app/var/banking/prepared
       - ./analitic/uploads/payments:/usr/src/app/var/banking/uploads
       - voovi_banking:/usr/src/app/var/banking/state
@@ -191,6 +191,67 @@ services:
     volumes:
       - ./analitic:/code
       - voovi_horoscope:/code/var/horoscope:ro
+    networks:
+      - voovi
+
+  bank-selenium:
+    image: selenium/standalone-firefox:4.52.0-20261101
+    shm_size: "2gb"
+    restart: unless-stopped
+    logging: *bounded-logging
+    environment:
+      SE_NODE_MAX_SESSIONS: "1"
+      SE_NODE_SESSION_TIMEOUT: "180"
+      SE_START_VNC: "false"
+      SE_START_NO_VNC: "false"
+      TZ: Europe/Moscow
+    volumes:
+      - ./var/bank/downloads:/bank
+    networks:
+      - voovi
+    healthcheck:
+      test: ["CMD", "/opt/bin/check-grid.sh", "--host", "0.0.0.0", "--port", "4444"]
+      interval: 10s
+      timeout: 10s
+      retries: 12
+      start_period: 30s
+
+  bank-downloader:
+    build:
+      context: .
+      dockerfile: banking_downloader/Dockerfile
+    restart: unless-stopped
+    logging: *bounded-logging
+    env_file:
+      - ./configs/env/local.env
+    environment:
+      TZ: Europe/Moscow
+    volumes:
+      - ./var/bank/downloads:/bank
+    depends_on:
+      bank-selenium:
+        condition: service_healthy
+    networks:
+      - voovi
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/health', timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  bank-download-tasks:
+    build:
+      context: ./s.voovi.ru-api
+      dockerfile: Dockerfile
+    command: python manage.py process_tasks --queue bank_downloads
+    restart: unless-stopped
+    stop_grace_period: 1900s
+    logging: *bounded-logging
+    env_file:
+      - ./configs/env/local.env
+    depends_on:
+      bank-downloader:
+        condition: service_healthy
     networks:
       - voovi
 
