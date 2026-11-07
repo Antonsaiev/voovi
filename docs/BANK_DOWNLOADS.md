@@ -87,3 +87,19 @@ docker compose --env-file configs/env/local.env logs --tail 100 bank-downloader 
 Версии проверены по официальным [загрузкам Selenium](https://www.selenium.dev/downloads/),
 [PyPI](https://pypi.org/project/selenium/) и
 [релизам docker-selenium](https://github.com/SeleniumHQ/docker-selenium/releases/tag/4.52.0-20261101).
+
+## Общая папка web-загрузок (обновление 07.11.2026)
+
+Банковские загрузки обоих web-интерфейсов направлены в одну папку проекта
+`/root/docker/voovi/analitic/uploads/payments`. В прежний контейнер `analitic`
+она подключена отдельным bind к `/code/uploads/payments`. Постоянная настройка
+добавлена в его прежний production Compose, чтобы обычный перезапуск сохранял путь.
+Новый интерфейс использует тот же источник через свой mount `./analitic/uploads`.
+Из Compose Voovi удалено внешнее подключение `/root/analitic/uploads/payments`;
+`BANK_LEGACY_UPLOADS_DIR` из production ENV удалён. Worker читает web-загрузки
+один раз через `BANK_UPLOADS_DIR`, с прежними защитой от дублей и блокировкой.
+
+Содержимое старой host-папки сохранено внутри `var/bank/migration-backups`.
+Пустой каталог по старому host-пути оставлен как точка вложенного mount старого
+контейнера; банковские файлы в нём больше не сохраняются. Рабочие выписки,
+состояние обработки и данные импорта не удаляются.

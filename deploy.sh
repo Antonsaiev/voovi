@@ -11,8 +11,7 @@ enabled = str(worker.get("environment", {}).get("BANK_AUTOMATION_ENABLED", "0"))
 if enabled:
     missing = [v["source"] for v in worker.get("volumes", [])
                if v.get("type") == "bind" and v["target"] in
-               ("/usr/src/app/var/banking/incoming", "/usr/src/app/var/banking/prepared",
-                "/usr/src/app/var/banking/legacy_uploads")
+               ("/usr/src/app/var/banking/incoming", "/usr/src/app/var/banking/prepared")
                and not pathlib.Path(v["source"]).is_dir()]
     if missing:
         sys.exit("Нет папок получения банковских файлов: " + ", ".join(missing))

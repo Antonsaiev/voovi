@@ -25,19 +25,20 @@
 
 | Вход | Production host | Worker |
 |---|---|---|
-| Полученные из банка | `/root/selenium-compose/files/Downloads` | `/usr/src/app/var/banking/incoming` |
-| Подготовленные прежним конвертером | `/root/selenium-compose/files/file_for_process` | `/usr/src/app/var/banking/prepared` |
+| Полученные из банка | `/root/docker/voovi/var/bank/downloads/ready` | `/usr/src/app/var/banking/incoming` |
+| Подготовленные прежним конвертером | `/root/docker/voovi/var/bank/file_for_process` | `/usr/src/app/var/banking/prepared` |
 | Ручная загрузка аналитики | `/root/docker/voovi/analitic/uploads/payments` | `/usr/src/app/var/banking/uploads` |
-| Загрузка прежней аналитики | `/root/analitic/uploads/payments` | `/usr/src/app/var/banking/legacy_uploads` |
+| Загрузка прежней аналитики | `/root/docker/voovi/analitic/uploads/payments` | `/usr/src/app/var/banking/uploads` |
 
-Локально первые две папки — `var/bank/Downloads` и `var/bank/file_for_process`.
-Ручная загрузка использует прежнюю папку аналитики; дополнительное копирование не нужно.
+Локально первые две папки — `var/bank/downloads/ready` и `var/bank/file_for_process`.
+Оба web-интерфейса используют одну папку проекта; дополнительное копирование не нужно.
 Архив, задания чеков и история находятся в постоянном Docker volume `voovi_banking`.
 Входные папки и пути состояния заданы параметрами `BANK_*` в ENV.
-Необязательная `BANK_LEGACY_UPLOADS_DIR` сохраняет работу прежней формы загрузки:
-TXT читаются как внешние исходники с сохранением байтов и inode. Одноразовая
-задача `uploads_only` по-прежнему обрабатывает только новую форму; старые загрузки
-попадают в общий пятиминутный запуск.
+После переноса 07.11.2026 `BANK_LEGACY_UPLOADS_DIR` в production не используется.
+Обе формы пишут в общий `BANK_UPLOADS_DIR`. Новый интерфейс ставит немедленный
+запуск; прежний интерфейс обслуживается регулярным пятиминутным запуском.
+Атомарно опубликованные `.ready.txt` принимаются сразу; для обычных TXT прежнего
+интерфейса сохраняются проверка стабильности и исходник.
 
 Worker ждёт стабильного размера/времени изменения TXT и проверяет завершённость
 структуры 1С. Для серверного файла создаётся ограниченный по размеру неизменяемый
