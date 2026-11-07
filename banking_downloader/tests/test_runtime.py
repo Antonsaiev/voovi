@@ -83,6 +83,53 @@ class RuntimeTests(unittest.TestCase):
         self.assertTrue(runtime.export('mi', DAY)['cached'])
         self.assertEqual(FakeDownloader.calls, [ACCOUNT, SECOND])
 
+    def test_missing_ready_is_restored_from_verified_archive_without_bank_login(self):
+        result = runtime.export('mi', DAY)
+        for item in result['accounts'].values():
+            (self.root / 'ready' / item['file']).unlink()
+        self.assertTrue(runtime.export('mi', DAY)['cached'])
+        for item in result['accounts'].values():
+            ready = self.root / 'ready' / item['file']
+            self.assertEqual(ready.read_bytes(), (self.root / 'archive' / item['file']).read_bytes())
+        self.assertEqual(FakeDownloader.calls, [ACCOUNT, SECOND])
+
+    def test_corrupt_ready_is_repaired_and_missing_archive_can_be_rebuilt(self):
+        result = runtime.export('mi', DAY)
+        first = result['accounts'][ACCOUNT]['file']
+        second = result['accounts'][SECOND]['file']
+        (self.root / 'ready' / first).write_bytes(b'corrupt')
+        (self.root / 'archive' / second).unlink()
+        self.assertTrue(runtime.export('mi', DAY)['cached'])
+        self.assertEqual((self.root / 'ready' / first).read_bytes(), statement())
+        self.assertEqual((self.root / 'archive' / second).read_bytes(), statement(SECOND))
+
+    def test_checkpoint_without_any_verified_original_fails_and_force_can_recover(self):
+        result = runtime.export('mi', DAY)
+        item = result['accounts'][ACCOUNT]
+        (self.root / 'ready' / item['file']).unlink()
+        (self.root / 'archive' / item['file']).write_bytes(b'corrupt')
+        with self.assertRaisesRegex(ValueError, 'no verified statement'):
+            runtime.export('mi', DAY)
+        self.assertEqual(FakeDownloader.calls, [ACCOUNT, SECOND])
+        self.assertFalse(runtime.export('mi', DAY, force=True)['cached'])
+
+    def test_oversize_download_is_never_read_or_published(self):
+        from unittest.mock import Mock
+        huge = self.root / 'huge.txt'
+        with huge.open('wb') as stream:
+            stream.truncate(runtime.MAX_STATEMENT_BYTES + 1)
+        with self.assertRaisesRegex(ValueError, '16 MiB'):
+            runtime.read_statement(huge)
+        with self.assertRaisesRegex(ValueError, '16 MiB'):
+            runtime.validate(b'x' * (runtime.MAX_STATEMENT_BYTES + 1), ACCOUNT, DAY)
+        class Oversize(FakeDownloader):
+            def run(self, day):
+                self.on_download(ACCOUNT, day, [huge])
+        with patch('browser.BankStatementDownloader', Oversize), self.assertRaisesRegex(ValueError, '16 MiB'):
+            runtime.export('mi', DAY)
+        self.assertEqual(list((self.root / 'ready').iterdir()), [])
+        self.assertEqual(list((self.root / 'state').iterdir()), [])
+
     def test_partial_success_only_retries_failed_account(self):
         FakeDownloader.fail_second = True
         with self.assertRaises(RuntimeError):

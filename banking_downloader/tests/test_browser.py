@@ -18,12 +18,15 @@ class BrowserTests(unittest.TestCase):
         self.downloader.wait = Mock()
         self.downloader.wait.until.return_value = []
 
-    def run_download(self, partial=False, growing=False):
+    def run_download(self, partial=False, growing=False, oversize=False):
         ticks = []
         target = self.path / 'export.txt'
         def click(xpath):
             if xpath == browser.EXPORT_CONFIRM_BUTTON:
                 target.write_bytes(b'' if growing else b'1CClientBankExchange\r\n')
+                if oversize:
+                    with target.open('ab') as stream:
+                        stream.truncate(browser.MAX_STATEMENT_BYTES + 1)
                 if partial:
                     (self.path / 'export.txt.part').write_bytes(b'partial')
         def until(condition, **kwargs):
@@ -59,6 +62,19 @@ class BrowserTests(unittest.TestCase):
 
     def test_modern_firefox_headless_option(self):
         self.assertIn('-headless', self.downloader._build_options().arguments)
+
+    def test_new_oversize_file_never_reaches_publisher(self):
+        self.downloader.on_download = Mock()
+        with self.assertRaisesRegex(ValueError, '16 MiB'):
+            self.run_download(oversize=True)
+        self.downloader.on_download.assert_not_called()
+
+    def test_old_oversize_failure_does_not_block_another_account(self):
+        with (self.path / 'previous-account-failure.txt').open('wb') as stream:
+            stream.truncate(browser.MAX_STATEMENT_BYTES + 1)
+        self.downloader.on_download = Mock()
+        self.run_download()
+        self.downloader.on_download.assert_called_once()
 
     def test_failed_login_closes_browser_and_has_bounded_attempts(self):
         self.downloader._login = Mock(side_effect=browser.TimeoutException())

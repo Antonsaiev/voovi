@@ -149,6 +149,7 @@ services:
     hostname: apisvoovi_tasks
     restart: unless-stopped
     command: python manage.py process_tasks
+    stop_grace_period: 1900s
     depends_on:
       db:
         condition: service_healthy
@@ -217,6 +218,7 @@ services:
       start_period: 30s
 
   bank-downloader:
+    stop_grace_period: 60s
     build:
       context: .
       dockerfile: banking_downloader/Dockerfile

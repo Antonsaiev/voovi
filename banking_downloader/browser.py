@@ -7,6 +7,8 @@ from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Iterable, List, Optional
 
+from statement_parser import MAX_STATEMENT_BYTES
+
 from selenium import webdriver
 from selenium.common.exceptions import ElementClickInterceptedException, StaleElementReferenceException, TimeoutException
 from selenium.webdriver.common.by import By
@@ -326,6 +328,8 @@ class BankStatementDownloader:
                     continue
                 current_state = (path.stat().st_mtime_ns, path.stat().st_size)
                 if existing_files.get(path) != current_state:
+                    if current_state[1] > MAX_STATEMENT_BYTES:
+                        raise ValueError("Statement exceeds the shared 16 MiB limit")
                     changed_files.append(path)
             partial = [path for path in changed_files if path.suffix in {".part", ".tmp"}]
             complete = [path for path in changed_files if path not in partial]
@@ -403,7 +407,10 @@ class BankStatementDownloader:
         document_marker_cp1251 = "СекцияДокумент=".encode("cp1251")
         document_marker_utf8 = "СекцияДокумент=".encode("utf-8")
         for path in unique_downloads:
-            contents = path.read_bytes()
+            with path.open("rb") as stream:
+                contents = stream.read(MAX_STATEMENT_BYTES + 1)
+            if len(contents) > MAX_STATEMENT_BYTES:
+                raise ValueError("Statement exceeds the shared 16 MiB limit")
             document_count = max(
                 contents.count(document_marker_cp1251),
                 contents.count(document_marker_utf8),

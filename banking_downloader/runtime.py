@@ -1,13 +1,13 @@
 """Read-only bank export, durable per-account checkpoints and atomic publication."""
 import argparse
-import fcntl
 import hashlib
 import json
 import os
 import re
 import secrets
 import shutil
-import subprocess
+import signal
+import threading
 import sys
 import time
 import uuid
@@ -15,7 +15,8 @@ from datetime import date, datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-from statement_parser import parse_statement, _decode
+from statement_parser import parse_statement, _decode, MAX_STATEMENT_BYTES
+from control import browser_lock, run_job, STOPPING, BrowserBusy, BrowserCleanupError, JobTimedOut, JobStopping
 
 PROFILES = ('mi', 'ai')
 JOB_TIMEOUT = 1800
@@ -33,6 +34,8 @@ def write_json(path, value):
 
 def validate(raw, account, day):
     """Check both structural completeness and the requested account/date, including empty statements."""
+    if len(raw) > MAX_STATEMENT_BYTES:
+        raise ValueError("Statement exceeds the shared 16 MiB limit")
     statement = parse_statement(raw)
     lines, _ = _decode(raw)
     header = []
@@ -54,6 +57,54 @@ def validate(raw, account, day):
     return statement.record_count
 
 
+def read_statement(path):
+    with path.open('rb') as stream:
+        if os.fstat(stream.fileno()).st_size > MAX_STATEMENT_BYTES:
+            raise ValueError('Statement exceeds the shared 16 MiB limit')
+        raw = stream.read(MAX_STATEMENT_BYTES + 1)
+    if len(raw) > MAX_STATEMENT_BYTES:
+        raise ValueError('Statement exceeds the shared 16 MiB limit')
+    return raw
+
+
+def publish_bytes(root, destination, raw):
+    temp = root / 'staging' / (uuid.uuid4().hex + '.tmp')
+    try:
+        with temp.open('xb') as stream:
+            os.chmod(temp, 0o600)
+            stream.write(raw)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temp, destination)
+    finally:
+        temp.unlink(missing_ok=True)
+
+
+def restore_checkpoint(root, item, account, day):
+    name, digest = item.get('file', ''), item.get('sha256', '')
+    if (not name or Path(name).name != name or not re.fullmatch(r'[0-9a-f]{64}', digest)):
+        raise ValueError('Invalid statement checkpoint')
+    verified = None
+    for path in (root / 'archive' / name, root / 'ready' / name):
+        try:
+            raw = read_statement(path)
+            if hashlib.sha256(raw).hexdigest() == digest:
+                validate(raw, account, day)
+                verified = raw
+                break
+        except (OSError, ValueError):
+            continue
+    if verified is None:
+        raise ValueError('Checkpoint has no verified statement; repeat export with --force')
+    for path in (root / 'archive' / name, root / 'ready' / name):
+        try:
+            intact = hashlib.sha256(read_statement(path)).hexdigest() == digest
+        except (OSError, ValueError):
+            intact = False
+        if not intact:
+            publish_bytes(root, path, verified)
+
+
 def export(profile, day, force=False):
     from browser import BankStatementDownloader, _parse_accounts
     if profile not in PROFILES or day >= date.today():
@@ -65,11 +116,7 @@ def export(profile, day, force=False):
         (root / name).mkdir(exist_ok=True, mode=0o700)
     os.chmod(root / 'staging', 0o711)
     # Browser writes to staging as seluser (uid 1200); importer can only see ready.
-    with (root / '.download.lock').open('a') as lock:
-        try:
-            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except BlockingIOError:
-            raise RuntimeError('Another bank export is running')
+    with browser_lock(root):
         for path in (root / 'debug').glob('bank-error-*.png'):
             if path.stat().st_mtime < time.time() - 7 * 86400:
                 path.unlink()
@@ -94,6 +141,9 @@ def export(profile, day, force=False):
             for account in accounts:
                 state['accounts'].pop(account, None)
             write_json(state_path, state)
+        for account in accounts:
+            if account in state['accounts']:
+                restore_checkpoint(root, state['accounts'][account], account, day)
         pending = [account for account in accounts if account not in state['accounts']]
         if not pending:
             return dict(state, status='success', cached=True)
@@ -110,21 +160,19 @@ def export(profile, day, force=False):
         def publish(account, statement_date, paths):
             if len(paths) != 1:
                 raise ValueError('Expected exactly one statement per account')
-            raw = paths[0].read_bytes()
+            raw = read_statement(paths[0])
             count = validate(raw, account, statement_date)
             digest = hashlib.sha256(raw).hexdigest()
             name = f'{profile}-{day.isoformat()}-{account[-4:]}-{digest}.txt'
             # Keep immutable original, then publish a closed file on the same filesystem.
             for destination in (root / 'archive' / name, root / 'ready' / name):
-                if destination.exists() and hashlib.sha256(destination.read_bytes()).hexdigest() == digest:
+                try:
+                    intact = hashlib.sha256(read_statement(destination)).hexdigest() == digest
+                except (OSError, ValueError):
+                    intact = False
+                if intact:
                     continue
-                temp = root / 'staging' / (uuid.uuid4().hex + '.tmp')
-                with temp.open('xb') as stream:
-                    os.chmod(temp, 0o600)
-                    stream.write(raw)
-                    stream.flush()
-                    os.fsync(stream.fileno())
-                os.replace(temp, destination)
+                publish_bytes(root, destination, raw)
             state['accounts'][account] = {'file': name, 'sha256': digest, 'bytes': len(raw), 'documents': count}
             write_json(state_path, state)
 
@@ -139,6 +187,10 @@ def export(profile, day, force=False):
 
 
 class Handler(BaseHTTPRequestHandler):
+    def setup(self):
+        super().setup()
+        self.connection.settimeout(5)
+
     def log_message(self, *args):
         pass
 
@@ -148,7 +200,10 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header('Content-Type', 'application/json')
         self.send_header('Content-Length', str(len(raw)))
         self.end_headers()
-        self.wfile.write(raw)
+        try:
+            self.wfile.write(raw)
+        except (BrokenPipeError, ConnectionResetError):
+            pass
 
     def do_GET(self):
         self.reply(200 if self.path == '/health' else 404, {'service': 'bank-downloader'})
@@ -173,12 +228,16 @@ class Handler(BaseHTTPRequestHandler):
             if payload.get('force') is True:
                 command.append('--force')
             # A hard bound covers a hung WebDriver as well as Python-level waits.
-            completed = subprocess.run(command, timeout=JOB_TIMEOUT)
-            if completed.returncode or not result_path.exists():
+            returncode = run_job(command, result_path.parent, JOB_TIMEOUT)
+            if returncode or not result_path.exists():
                 return self.reply(502, {'error': 'Bank export failed; inspect downloader logs and protected debug directory'})
             self.reply(200, json.loads(result_path.read_text()))
-        except subprocess.TimeoutExpired:
+        except JobTimedOut:
             self.reply(504, {'error': 'Bank export exceeded 1800 seconds'})
+        except BrowserBusy:
+            self.reply(409, {'error': 'Another bank export is running'})
+        except (BrowserCleanupError, JobStopping) as error:
+            self.reply(503, {'error': str(error)})
         finally:
             result_path.unlink(missing_ok=True)
 
@@ -195,7 +254,20 @@ def main():
     if args.serve:
         if not os.environ.get('BANK_DOWNLOAD_TOKEN'):
             parser.error('BANK_DOWNLOAD_TOKEN is required')
-        ThreadingHTTPServer(('0.0.0.0', 8080), Handler).serve_forever()
+        # server_close waits for request supervisors to stop their child and Grid
+        # session. A short socket read deadline also bounds incomplete requests.
+        server = ThreadingHTTPServer(('0.0.0.0', 8080), Handler)
+        server.daemon_threads = False
+        def shutdown(signum, frame):
+            STOPPING.set()
+            threading.Thread(target=server.shutdown, daemon=True).start()
+        signal.signal(signal.SIGTERM, shutdown)
+        signal.signal(signal.SIGINT, shutdown)
+        try:
+            server.serve_forever()
+        finally:
+            STOPPING.set()
+            server.server_close()
     elif args.profile and args.date:
         try:
             result = export(args.profile, args.date, args.force)
