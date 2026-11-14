@@ -52,6 +52,10 @@ services:
         read_only: true
         bind:
           create_host_path: false
+      - type: bind
+        source: ./database/migrations/2026-11-14_avkontur_bill_link.sql
+        target: /dump/avkontur_bill_link.sql
+        read_only: true
     entrypoint: ["/bin/sh", "/usr/local/bin/restore-db.sh"]
     networks:
       - voovi

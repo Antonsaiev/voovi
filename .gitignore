@@ -34,3 +34,5 @@ build/
 
 # Локальные отчёты о несостыковках данных
 /database/audits/
+
+!/database/migrations/2026-11-14_avkontur_bill_link.sql

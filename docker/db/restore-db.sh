@@ -24,4 +24,11 @@ SQL
 
 mysql -h"$MYSQL_HOST" -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE" < "$MYSQL_DUMP_FILE"
 
+if [ -s /dump/avkontur_bill_link.sql ]; then
+  needs_bill_link=$(mysql -h"$MYSQL_HOST" -uroot -p"$MYSQL_ROOT_PASSWORD" -N "$MYSQL_DATABASE"     -e "SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='avkontur' AND COLUMN_NAME='rand_schet'")
+  if [ "$needs_bill_link" = 1 ]; then
+    mysql -h"$MYSQL_HOST" -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE" < /dump/avkontur_bill_link.sql
+  fi
+fi
+
 echo "Database '$MYSQL_DATABASE' restored"
